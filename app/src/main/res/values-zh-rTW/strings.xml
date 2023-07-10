@@ -1,0 +1,171 @@
+<resources>
+    <string name="app_name">馬偕 IRB</string>
+    <string name="ZoomOut">放大</string>
+    <string name="No_BLE_Permission">尚未取得 BLE 權限</string>
+    <string name="No_Device_Connection">沒有裝置連線</string>
+
+    <!--  Fragment  -->
+    <string name="Fragment_Reset">重製</string>
+    <string name="Fragment_SelectAll">全選</string>
+    <string name="Fragment_ClearAll">清除</string>
+
+    <!--  BluetoothPermissionAgreeFragment  -->
+    <string name="BluetoothPermissionTag">藍牙權限</string>
+    <string name="BluetoothPermissionAgreeFragment">請同意位置權限以便與藍牙裝置進行通訊</string>
+    <!--  LocationPermissionAgreeFragment  -->
+    <string name="LocationPermissionTag">位置權限</string>
+    <string name="LocationPermissionAgreeFragment">請同意位置權限以便啟動藍牙掃描功能</string>
+    <!--  ExternalStoragePermissionAgreeFragment  -->
+    <string name="ExternalStoragePermissionTag">外部儲存權限</string>
+    <string name="ExternalStoragePermissionAgreeFragment">請同意外部存取權限以便讀寫檔案</string>
+    <!--  AllPermissionAgreeFragment  -->
+    <string name="AllPermissionsTag">所有權限</string>
+    <string name="AllPermissionsAgreeFragment">請同意所有權限</string>
+
+    <!--  ======================================================================  -->
+    <!--  Home  -->
+    <string name="Central">中央</string>
+    <string name="Peripheral">周邊</string>
+    <string name="About">關於我們</string>
+    <string name="AboutDescription">感謝以下開源專案</string>
+    <string name="ShowDevicesList">顯示裝置列表</string>
+    <string name="DeveloperMode">開發者模式</string>
+    <string name="CloseApp">關閉此應用程式</string>
+    <string name="AboutCloseApp">您確定要關閉此應用程式?</string>
+    <string name="ModeSwitchTogglingAlert">警告: 切換模式將會 重新啟動 應用程序!!!</string>
+
+    <!--  ======================================================================  -->
+    <!--  Central_Chart  -->
+    <string name="AboutDataMonitorManager">數據監控管理器</string>
+    <string-array name="AboutDataMonitorSelector">
+        <item>顯示資料</item>
+        <item>顯示類別</item>
+        <item>刪除資料</item>
+        <item>刪除類別</item>
+    </string-array>
+    <string name="AboutHighlightSelector">選擇顯示指定的 X 資訊</string>
+    <string name="LabelName">資料名稱</string>
+    <string name="Type">資料類別</string>
+    <!--  Labels_Units  -->
+    <string name="DefaultXLabel">電壓</string>
+    <string-array name="XLabels">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item>時間</item>
+        <item>時間</item>
+    </string-array>
+    <string name="DefaultYLabel">電流</string>
+    <string-array name="YLabels">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+    </string-array>
+    <string-array name="SpecialLabels">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+<!--        <item>濃度</item>-->
+<!--        <item>濃度</item>-->
+    </string-array>
+    <string name="DefaultTypeLabel">...</string>
+    <string-array name="TypeLabels">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item>皮質醇</item>
+        <item>乳酸</item>
+    </string-array>
+
+    <!--  ======================================================================  -->
+    <!--  Central_Selection_Device  -->
+    <string name="Central_mode">中央模式</string>
+
+    <string name="ble_not_supported">您的裝置不支援 BLE</string>
+    <string name="error_bluetooth_not_supported">您的裝置不支援 Bluetooth</string>
+
+    <!-- Label -->
+    <string name="DeviceName">裝置名稱</string>
+    <string name="DeviceAddress">裝置位址</string>
+    <string name="RSSI">信號強度</string>
+    <string name="State">狀態</string>
+    <string name="Data">資料</string>
+
+    <!-- Label Data -->
+    <string name="Connected">已連線</string>
+    <string name="Disconnected">未連線</string>
+
+    <string name="noData">沒有資料</string>
+
+    <string name="UnknownDevice">未知裝置</string>
+    <string name="UnknownService">未知服務</string>
+    <string name="UnknownCharacteristic">未知特徵</string>
+
+    <!-- listItem_Device -->
+    <string name="listItem_device_Btn_Connect">連線</string>
+    <string name="listItem_device_Btn_Disconnect">斷線</string>
+    <string name="listItem_device_Btn_Pair">配對</string>
+    <string name="listItem_device_Btn_Unpair">不配</string>
+
+    <!-- ViewPager's Titles (Mackay Developer) -->
+    <string-array name="ViewPagerTitlesMackayDeveloper">
+        <item>已掃描裝置</item>
+        <item>暫時 UI</item>
+        <item>圖表</item>
+        <item>護理師</item>
+        <item>已配對裝置</item>
+    </string-array>
+    <!-- ViewPager's Titles (Mackay Client) -->
+    <string-array name="ViewPagerTitlesMackayClient">
+        <item>已掃描裝置</item>
+        <item>護理師</item>
+    </string-array>
+    <!-- ViewPager's Titles (Foot Developer) -->
+    <string-array name="ViewPagerTitlesFootDeveloper">
+        <item>已掃描裝置</item>
+        <item>暫時2 UI</item>
+        <item>腳丫子</item>
+    </string-array>
+
+    <!--  ======================================================================  -->
+
+    <!-- Temp_UI-->
+    <string name="Temp_Command_Hint">請輸入指令</string>
+    <string name="Temp_UI_C3">C3 送出</string>
+    <string name="Temp_DataName_Hint">請輸入以便為該資料與檔案命名</string>
+    <string name="Temp_UI_C6">C6 接收</string>
+    <string name="Temp_FileIndexLimit_Hint">請輸入以限制保存文件的最大編號</string>
+    <string name="Temp_UI_save">儲存成 Excel 檔案</string>
+    <string name="Temp_UI_save_toast">儲存 Excel 檔案成功</string>
+
+    <!-- Senior -->
+    <string name="LiZe">李澤</string>
+    <string name="XieZhiLong">謝智隆</string>
+
+    <!-- Excel -->
+    <string name="RawData">原始資料</string>
+    <string name="SaveFileTime">存檔時間</string>
+    <string name="Number">編號</string>
+
+    <!--  ======================================================================  -->
+    <!--  Different from LiZe App  -->
+    <string name="Start">開始</string>
+    <string name="AddDevice">新增裝置</string>
+    <string name="EditDevice">編輯裝置</string>
+    <string name="CurrentDeviceIP">當前裝置位址</string>
+    <string name="Is">為: </string>
+    <string name="AboutNewDevice">請輸入新裝置的位址</string>
+
+    <string name="DeleteSelectedDevices">刪除被勾選的裝置</string>
+
+    <string name="Temp_DataName_Hint_Client">請輸入患者姓名</string>
+
+</resources>

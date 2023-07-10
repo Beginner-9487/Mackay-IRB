@@ -1,0 +1,34 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+
+    <group>
+        <item
+            android:id="@+id/CloseApp"
+            android:icon="@android:drawable/ic_menu_close_clear_cancel"
+            android:title="@string/CloseApp"
+            app:showAsAction="always" />
+    </group>
+
+    <group>
+        <item
+            android:id="@+id/AboutDeveloperMode"
+            android:icon="@android:drawable/ic_menu_manage"
+            android:title="@string/DeveloperMode"
+            app:showAsAction="always" />
+
+        <item
+            android:id="@+id/AboutLibrary"
+            android:icon="@android:drawable/ic_menu_help"
+            android:title="@string/About"
+            app:showAsAction="always" />
+
+        <item
+            android:id="@+id/AboutDeviceList"
+            android:icon="@android:drawable/ic_menu_view"
+            android:title="@string/ShowDevicesList"
+            app:showAsAction="always" />
+    </group>
+
+</menu>

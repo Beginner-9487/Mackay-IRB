@@ -1,0 +1,207 @@
+<resources>
+    <string name="app_name">Mackay IRB</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+
+    <!--    <string name="ble_not_supported">BLE not supported</string>-->
+    <!--    <string name="My_BLE">My BLE</string>-->
+    <string name="ZoomOut">Zoom Out</string>
+    <string name="No_BLE_Permission">No BLE Permission</string>
+    <string name="No_Device_Connection">No device connection</string>
+    <!--    <string name="connected">Connected to BLE</string>-->
+    <!--    <string name="disconnected">Disconnected to BLE</string>-->
+
+    <!--  Fragment  -->
+    <string name="Fragment_Reset">Reset</string>
+    <string name="Fragment_SelectAll">Select All</string>
+    <string name="Fragment_ClearAll">Clear All</string>
+
+    <!--  BluetoothPermissionAgreeFragment  -->
+    <string name="BluetoothPermissionTag">Bluetooth Permission</string>
+    <string name="BluetoothPermissionAgreeFragment">Request Bluetooth Permission for Bluetooth Devices Connection.</string>
+    <!--  LocationPermissionAgreeFragment  -->
+    <string name="LocationPermissionTag">Location Permission</string>
+    <string name="LocationPermissionAgreeFragment">Request Fine &amp; Coarse Location Permission for Bluetooth Scan.</string>
+    <!--  ExternalStoragePermissionAgreeFragment  -->
+    <string name="ExternalStoragePermissionTag">External Storage Permission</string>
+    <string name="ExternalStoragePermissionAgreeFragment">Request Read &amp; Write External Storage Permission for Save Files.</string>
+    <!--  AllPermissionAgreeFragment  -->
+    <string name="AllPermissionsTag">All Permissions</string>
+    <string name="AllPermissionsAgreeFragment">Please agree ALL permissions</string>
+
+    <!--  ======================================================================  -->
+    <!--  Home  -->
+    <string name="Central">Central</string>
+    <string name="Peripheral">Peripheral</string>
+    <string name="About">About</string>
+    <string name="AboutDescription">Good people create those good stuff.</string>
+    <string name="ShowDevicesList">Show Devices List</string>
+    <string name="DeveloperMode">Development Mode</string>
+    <string name="CloseApp">Close This App</string>
+    <string name="AboutCloseApp">Are you sure you want to close this App.</string>
+    <string name="ModeSwitchTogglingAlert">Caution: Toggling settings will RESTART the app!!!</string>
+
+    <!--  ======================================================================  -->
+    <!--  Central_Chart  -->
+    <string name="AboutDataMonitorManager">Data Monitor Manager</string>
+    <string-array name="AboutDataMonitorSelector">
+        <item>Show Data</item>
+        <item>Show Types</item>
+        <item>Delete Data</item>
+        <item>Delete Types</item>
+    </string-array>
+    <string name="AboutHighlightSelector">Enter to get a specific X.</string>
+    <string name="LabelName">LabelName</string>
+    <string name="Type">Type</string>
+    <!--  Labels_Units  -->
+    <string name="DefaultXLabel">Voltage</string>
+    <string-array name="XLabels">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item>Time</item>
+        <item>Time</item>
+    </string-array>
+    <string name="DefaultYLabel">Current</string>
+    <string-array name="YLabels">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+    </string-array>
+    <string-array name="SpecialLabels">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+<!--        <item>Concentration</item>-->
+<!--        <item>Concentration</item>-->
+    </string-array>
+    <string name="DefaultTypeLabel">...</string>
+    <string-array name="TypeLabels">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item>Cortisol</item>
+        <item>Lactate</item>
+    </string-array>
+    <string name="DefaultXUnit" translatable="false">mV</string>
+    <string-array name="XUnits">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item>s</item>
+        <item>s</item>
+    </string-array>
+    <string name="DefaultYUnit" translatable="false">mA</string>
+    <string-array name="YUnits">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+        <item>uA</item>
+        <item>uA</item>
+<!--        <item>nmol/L</item>-->
+<!--        <item>mmol/L</item>-->
+    </string-array>
+
+    <!--  ======================================================================  -->
+    <!--  Central_Selection_Device  -->
+    <string name="Central_mode">Central Mode</string>
+
+    <string name="ble_not_supported">BLE is not supported</string>
+    <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
+
+    <!-- Label -->
+    <string name="DeviceName">Device Name</string>
+    <string name="DeviceAddress">Device Address</string>
+    <string name="RSSI">RSSI</string>
+    <string name="State">State</string>
+    <string name="Data">Data</string>
+
+    <!-- Label Data -->
+    <string name="Connected">Connected</string>
+    <string name="Disconnected">Disconnected</string>
+
+    <string name="noData">No data</string>
+
+    <string name="UnknownDevice">Unknown device</string>
+    <string name="UnknownService">Unknown service</string>
+    <string name="UnknownCharacteristic">Unknown characteristic</string>
+
+    <!-- listItem_Device -->
+    <string name="listItem_device_Btn_Connect">Connect</string>
+    <string name="listItem_device_Btn_Disconnect">Disconnect</string>
+    <string name="listItem_device_Btn_Pair">Pair</string>
+    <string name="listItem_device_Btn_Unpair">Unpair</string>
+
+    <!-- ViewPager's Titles (Mackay Developer) -->
+    <string-array name="ViewPagerTitlesMackayDeveloper">
+        <item>Scanned Devices</item>
+        <item>Temp UI</item>
+        <item>Chart</item>
+        <item>RPN</item>
+        <item>Bonded Devices</item>
+    </string-array>
+    <!-- ViewPager's Titles (Mackay Client) -->
+    <string-array name="ViewPagerTitlesMackayClient">
+        <item>Scanned Devices</item>
+        <item>RPN</item>
+    </string-array>
+    <!-- ViewPager's Titles (Foot Developer) -->
+    <string-array name="ViewPagerTitlesFootDeveloper">
+        <item>Scanned Devices</item>
+        <item>Temp2 UI</item>
+        <item>Foot</item>
+    </string-array>
+
+    <!--  ======================================================================  -->
+
+    <!-- Temp_UI -->
+    <string name="Temp_Command_Hint">Please enter the Command.</string>
+    <string name="Temp_UI_C3">C3 Send</string>
+    <string name="Temp_DataName_Hint">Please enter to name this data and file.</string>
+    <string name="Temp_UI_C6">C6 Receive</string>
+    <string name="Temp_FileIndexLimit_Hint">Please enter to limit the maximum index of saved files.</string>
+    <string name="Temp_UI_save">Save Excel</string>
+    <string name="Temp_UI_save_toast">Saving the Excel file succeeded.</string>
+
+    <!-- Senior -->
+    <string name="LiZe">LiZe</string>
+    <string name="XieZhiLong">XieZhiLong</string>
+
+    <!-- Excel -->
+    <string name="RawData">Raw Data</string>
+    <string name="SaveFileTime">Save File Time</string>
+    <string name="Number">Number</string>
+    <string name="title_activity_main" translatable="false">MainActivity</string>
+
+    <!--  ======================================================================  -->
+    <!--  Different from LiZe App  -->
+    <string name="Start">Start</string>
+    <string name="AddDevice">Add Device</string>
+    <string name="EditDevice">Edit Device</string>
+    <string name="CurrentDeviceIP">Current device IP</string>
+    <string name="Is"> is: </string>
+    <string name="AboutNewDevice">Please Enter New Device IP</string>
+
+    <string name="DeleteSelectedDevices">Delete Selected Devices</string>
+
+    <string name="Temp_DataName_Hint_Client">Please enter patient name</string>
+
+</resources>
