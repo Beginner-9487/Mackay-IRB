@@ -2,21 +2,16 @@ package com.example.mackayirb.ui.central;
 
 import com.example.mackayirb.R;
 import com.example.mackayirb.data.ble.BLEDataServer;
-import com.example.mackayirb.data.central.MackayDataManager;
 import com.example.mackayirb.utils.BasicResourceManager;
-import com.example.mackayirb.utils.MyNamingStrategy;
 import com.example.mackayirb.utils.OtherUsefulFunction;
 
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 
@@ -58,8 +53,8 @@ public class CentralTemp2UIFragment extends CentralFragment implements CentralMv
         btn_c3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(BasicResourceManager.Permissions.checkExternalStoragePermissions()) {
-                    mCentralPresenter.Send_All_C(OtherUsefulFunction.hexStringToByteArray(edit_command.getText().toString()));
+                if(BasicResourceManager.Permissions.checkGroupPermissions(BasicResourceManager.Permissions.REQUEST_EXTERNAL_STORAGE_CODE)) {
+                    mCentralPresenter.SendToAllCharacteristic(OtherUsefulFunction.hexStringToByteArray(edit_command.getText().toString()));
                     edit_command.setText("");
                     startingClock = Calendar.getInstance().getTimeInMillis();
                 }

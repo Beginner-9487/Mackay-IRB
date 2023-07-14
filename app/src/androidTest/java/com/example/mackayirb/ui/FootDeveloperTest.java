@@ -1,22 +1,13 @@
 package com.example.mackayirb.ui;
 
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.swipeLeft;
-import static androidx.test.espresso.action.ViewActions.swipeRight;
-import static androidx.test.espresso.action.ViewActions.typeText;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
 
-import com.example.mackayirb.R;
 import com.example.mackayirb.utils.BasicResourceManager;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -30,7 +21,7 @@ public class FootDeveloperTest extends FootTest {
 
     private int numberOfData = 5;
     @Test
-    public void Test() {
+    public void TestDeveloperFoot() {
 
         for(int i=0; i<numberOfData; i++) {
             createNewData();

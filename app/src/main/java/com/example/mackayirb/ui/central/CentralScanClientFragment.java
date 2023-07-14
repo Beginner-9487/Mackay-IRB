@@ -36,11 +36,11 @@ public class CentralScanClientFragment extends CentralScanDeveloperFragment impl
     public void Start() {
         ((MainActivity) getActivity()).changeToolbar(1);
         ((MainActivity) getActivity()).mViewPager.setCurrentItem(1);
-        mCentralPresenter.Send_All_C(OtherUsefulFunction.hexStringToByteArray("60"));
+        mCentralPresenter.SendToAllCharacteristic(OtherUsefulFunction.hexStringToByteArray("60"));
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mCentralPresenter.Send_All_C(OtherUsefulFunction.hexStringToByteArray("01"));
+                mCentralPresenter.SendToAllCharacteristic(OtherUsefulFunction.hexStringToByteArray("01"));
             }
         }, 500);
     }
@@ -182,12 +182,12 @@ public class CentralScanClientFragment extends CentralScanDeveloperFragment impl
     }
 
     private void sendCommand() {
-        mCentralPresenter.Send_All_C(OtherUsefulFunction.hexStringToByteArray("60"));
+        mCentralPresenter.SendToAllCharacteristic(OtherUsefulFunction.hexStringToByteArray("60"));
         final Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mCentralPresenter.Send_All_C(OtherUsefulFunction.hexStringToByteArray("01"));
+                mCentralPresenter.SendToAllCharacteristic(OtherUsefulFunction.hexStringToByteArray("01"));
             }
         }, 1000);
     }

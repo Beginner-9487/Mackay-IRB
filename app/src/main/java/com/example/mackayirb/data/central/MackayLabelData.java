@@ -248,7 +248,7 @@ public class MackayLabelData extends CentralLabelData<MackayDeviceData> {
     public boolean saveNewFile() {
         // Log.i("saveMyFile: " + labelName);
         try {
-            if(BasicResourceManager.Permissions.checkExternalStoragePermissions()) {
+            if(BasicResourceManager.Permissions.checkGroupPermissions(BasicResourceManager.Permissions.REQUEST_EXTERNAL_STORAGE_CODE)) {
 
                 markAsDownloaded();
 

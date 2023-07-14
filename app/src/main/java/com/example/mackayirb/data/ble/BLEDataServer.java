@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -29,7 +30,9 @@ import androidx.core.app.NotificationCompat;
 import com.example.mackayirb.R;
 import com.example.mackayirb.SampleGattAttributes;
 import com.example.mackayirb.injector.ApplicationContext;
+import com.example.mackayirb.utils.BasicResourceManager;
 import com.example.mackayirb.utils.Log;
+import com.example.mackayirb.utils.OtherUsefulFunction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -266,6 +269,7 @@ public class BLEDataServer extends Service {
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicRead(gatt, characteristic, status);
             if (status == BluetoothGatt.GATT_SUCCESS) {
+//                Toast.makeText(mContext, "onCharacteristicRead: " + characteristic.getUuid().toString(), Toast.LENGTH_SHORT).show();
                 whenFetchingData(gatt, characteristic);
             }
         }
@@ -278,6 +282,7 @@ public class BLEDataServer extends Service {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
+//            Toast.makeText(mContext, "onCharacteristicChanged: " + characteristic.getUuid().toString(), Toast.LENGTH_SHORT).show();
             whenFetchingData(gatt, characteristic);
         }
 
@@ -404,6 +409,10 @@ public class BLEDataServer extends Service {
     }
 
     public void whenFetchingData(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+//        Toast.makeText(mContext, "whenFetchingData: \n" + characteristic.getUuid().toString(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(BasicResourceManager.getCurrentFragment().getContext(), "whenFetchingData: " +
+//                OtherUsefulFunction.byteArrayToHexString(characteristic.getValue(), ", ")
+//                , Toast.LENGTH_SHORT).show();
         updateLastReceivedData(gatt, characteristic);
     }
 
@@ -511,7 +520,7 @@ public class BLEDataServer extends Service {
 
     // =================================================================================================
     // TODO Temp UI
-    public void Send_All_C(byte[] command) {
+    public void SendToAllCharacteristic(byte[] command) {
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
 //            return;
         }

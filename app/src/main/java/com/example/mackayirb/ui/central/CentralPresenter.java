@@ -235,8 +235,8 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
     }
 
     // =====================================================================================
-    public void Send_All_C(byte[] command) {
-        myDataManager.Send_All_C(command);
+    public void SendToAllCharacteristic(byte[] command) {
+        myDataManager.SendToAllCharacteristic(command);
     }
 
     public BLEDataServer getBLEDataServer() {

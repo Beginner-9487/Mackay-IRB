@@ -10,6 +10,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.view.MotionEvent;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +25,7 @@ import com.example.mackayirb.fragment.PermissionAgreeFragment;
 import com.github.mikephil.charting.data.Entry;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class OtherUsefulFunction {
 
@@ -38,7 +40,11 @@ public class OtherUsefulFunction {
         boolean Rationale_lock = false;
 
         for (String permission:PermissionList) {
+            Log.d(permission + ":" + String.valueOf(ContextCompat.checkSelfPermission(activity, permission)));
+//            Toast.makeText(activity, permission + ":" + String.valueOf(ContextCompat.checkSelfPermission(activity, permission)), Toast.LENGTH_SHORT).show();
             if(ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+//                Log.d(permission);
+//                Toast.makeText(activity, permission, Toast.LENGTH_SHORT).show();
                 b = false;
                 if(ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
                     Rationale_lock = true;
@@ -225,6 +231,37 @@ public class OtherUsefulFunction {
         float dx = x2 - x1;
         float dy = y2 - y1;
         return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    public static <T> T[] concatWithArrayCopy(T[] array1, T[] array2) {
+        T[] result = Arrays.copyOf(array1, array1.length + array2.length);
+        System.arraycopy(array2, 0, result, array1.length, array2.length);
+        return result;
+    }
+    public static boolean[] concatWithArrayCopy(boolean[] array1, boolean[] array2) {
+        boolean[] result = Arrays.copyOf(array1, array1.length + array2.length);
+        System.arraycopy(array2, 0, result, array1.length, array2.length);
+        return result;
+    }
+    public static byte[] concatWithArrayCopy(byte[] array1, byte[] array2) {
+        byte[] result = Arrays.copyOf(array1, array1.length + array2.length);
+        System.arraycopy(array2, 0, result, array1.length, array2.length);
+        return result;
+    }
+    public static int[] concatWithArrayCopy(int[] array1, int[] array2) {
+        int[] result = Arrays.copyOf(array1, array1.length + array2.length);
+        System.arraycopy(array2, 0, result, array1.length, array2.length);
+        return result;
+    }
+    public static float[] concatWithArrayCopy(float[] array1, float[] array2) {
+        float[] result = Arrays.copyOf(array1, array1.length + array2.length);
+        System.arraycopy(array2, 0, result, array1.length, array2.length);
+        return result;
+    }
+    public static double[] concatWithArrayCopy(double[] array1, double[] array2) {
+        double[] result = Arrays.copyOf(array1, array1.length + array2.length);
+        System.arraycopy(array2, 0, result, array1.length, array2.length);
+        return result;
     }
 
 }

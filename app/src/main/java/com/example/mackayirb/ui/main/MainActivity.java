@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.mackayirb.ui.central.CentralChartForRPNFragment;
@@ -91,7 +89,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         // Checks if Bluetooth is enabled
         if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            if (BasicResourceManager.Permissions.checkBluetoothPermissions()) {
+            if (BasicResourceManager.Permissions.checkGroupPermissions(BasicResourceManager.Permissions.REQUEST_BLUETOOTH_CODE)) {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
 //                    return;
                 }
@@ -118,7 +116,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         if (!mBluetoothAdapter.isEnabled()) {
             if (!mBluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                if (BasicResourceManager.Permissions.checkBluetoothPermissions()) {
+                if (BasicResourceManager.Permissions.checkGroupPermissions(BasicResourceManager.Permissions.REQUEST_BLUETOOTH_CODE)) {
                     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
 //                        return;
                     }

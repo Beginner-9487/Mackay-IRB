@@ -15,7 +15,6 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
 import com.example.mackayirb.R;
 import com.example.mackayirb.utils.BasicResourceManager;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,7 +28,7 @@ public class MackayClientTest extends MackayTest {
 
     private int numberOfData = 5;
     @Test
-    public void TestLiZe() {
+    public void TestClientLiZe() {
 
         onView(withId(R.id.DataNameText))
                 .check(matches(isDisplayed()))
@@ -52,7 +51,7 @@ public class MackayClientTest extends MackayTest {
 
 
     @Test
-    public void TestXieZhiLong() {
+    public void TestClientXieZhiLong() {
 
         onView(withId(R.id.DataNameText))
                 .check(matches(isDisplayed()))

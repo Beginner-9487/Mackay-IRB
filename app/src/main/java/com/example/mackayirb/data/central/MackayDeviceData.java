@@ -115,7 +115,7 @@ public class MackayDeviceData extends CentralDeviceData<MackayDataManager, Macka
     public boolean createDeviceDataFile() {
 //        Log.d("createDeviceDataFile");
         try {
-            if (BasicResourceManager.Permissions.checkExternalStoragePermissions()) {
+            if (BasicResourceManager.Permissions.checkGroupPermissions(BasicResourceManager.Permissions.REQUEST_EXTERNAL_STORAGE_CODE)) {
 
                 Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH-mm-ss");
@@ -172,7 +172,7 @@ public class MackayDeviceData extends CentralDeviceData<MackayDataManager, Macka
 
 //        Log.i(centralLabelData.labelName);
         try {
-            if(BasicResourceManager.Permissions.checkExternalStoragePermissions()) {
+            if(BasicResourceManager.Permissions.checkGroupPermissions(BasicResourceManager.Permissions.REQUEST_EXTERNAL_STORAGE_CODE)) {
 
                 MyExcelFile file = new MyExcelFile();
                 String sdCardPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator;

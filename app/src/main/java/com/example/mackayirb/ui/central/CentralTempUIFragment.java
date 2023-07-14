@@ -68,9 +68,9 @@ public class CentralTempUIFragment extends CentralFragment implements CentralMvp
         btn_c3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(BasicResourceManager.Permissions.checkExternalStoragePermissions()) {
+                if(BasicResourceManager.Permissions.checkGroupPermissions(BasicResourceManager.Permissions.REQUEST_EXTERNAL_STORAGE_CODE)) {
                     SetNamingStrategy();
-                    mCentralPresenter.Send_All_C(OtherUsefulFunction.hexStringToByteArray(edit_command.getText().toString()));
+                    mCentralPresenter.SendToAllCharacteristic(OtherUsefulFunction.hexStringToByteArray(edit_command.getText().toString()));
                     edit_command.setText("");
                     startingClock = Calendar.getInstance().getTimeInMillis();
                 }

@@ -42,7 +42,7 @@ public class CentralScanDeveloperFragment extends CentralScanFragment implements
 
     @Override
     public void startCentralDetailsActivity(BluetoothDevice device) {
-        if (BasicResourceManager.Permissions.checkBluetoothPermissions()) {
+        if (BasicResourceManager.Permissions.checkGroupPermissions(BasicResourceManager.Permissions.REQUEST_BLUETOOTH_CODE)) {
             Intent intent = new Intent(getActivity(), CentralDetailsActivity.class);
             intent.putExtra(CentralDetailsActivity.EXTRAS_DEVICE_NAME, device.getName());
             intent.putExtra(CentralDetailsActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());

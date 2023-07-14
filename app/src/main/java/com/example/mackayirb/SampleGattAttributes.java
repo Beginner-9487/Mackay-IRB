@@ -18,6 +18,7 @@ package com.example.mackayirb;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -25,8 +26,8 @@ import java.util.UUID;
  */
 public class SampleGattAttributes {
     public static HashMap<String, String> attributes = new HashMap();
-    public static ArrayList<String> subscribed_UUIDs = new ArrayList<>();
-    public static ArrayList<String> input_UUIDs = new ArrayList<>();
+    public static ArrayList<String> subscribed_UUIDs;
+    public static ArrayList<String> input_UUIDs;
 
     static {
 
@@ -41,17 +42,32 @@ public class SampleGattAttributes {
         attributes.put("00002a29-0000-1000-8000-00805f9b34fb", "Manufacturer Name String");
 
         // C3 & C6
+        attributes.put("0000fff1-0000-1000-8000-00805f9b34fb", "C1");
+        attributes.put("0000fff2-0000-1000-8000-00805f9b34fb", "C2");
         attributes.put("0000fff3-0000-1000-8000-00805f9b34fb", "C3");
+        attributes.put("0000fff4-0000-1000-8000-00805f9b34fb", "C4");
+        attributes.put("0000fff5-0000-1000-8000-00805f9b34fb", "C5");
         attributes.put("0000fff6-0000-1000-8000-00805f9b34fb", "C6");
 
         // ================================================================================
         // subscribed
-        subscribed_UUIDs.add("0000fff6-0000-1000-8000-00805f9b34fb");
+//        input_UUIDs = getUUIDsByReference(new String[]{"C1","C3"});
+//        subscribed_UUIDs = getUUIDsByReference(new String[]{"C4","C6"});
+        input_UUIDs = getUUIDsByReference(new String[]{"C1","C2","C3","C4","C5","C6"});
+        subscribed_UUIDs = getUUIDsByReference(new String[]{"C1","C2","C3","C4","C5","C6"});
 
-        // ================================================================================
-        // input
-        input_UUIDs.add("0000fff3-0000-1000-8000-00805f9b34fb");
+    }
 
+    public static ArrayList<String> getUUIDsByReference(String[] reference) {
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (Map.Entry<String, String> entry:attributes.entrySet()) {
+            for (String s:reference) {
+                if(s.equals(entry.getValue())) {
+                    arrayList.add(entry.getKey());
+                }
+            }
+        }
+        return arrayList;
     }
 
     public static String lookup(UUID uuid, String defaultName) {

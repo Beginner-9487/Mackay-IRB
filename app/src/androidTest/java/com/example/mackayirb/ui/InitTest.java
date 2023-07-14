@@ -105,4 +105,12 @@ public abstract class InitTest {
     public byte getRandomByte() {
         return (byte) ((Math.random() - 0.5f) * 254f);
     }
+
+    public byte[] getRandomByteArray(int length) {
+        byte[] array = new byte[length];
+        for (int i=0; i<length; i++) {
+            array[i] = getRandomByte();
+        }
+        return array;
+    }
 }

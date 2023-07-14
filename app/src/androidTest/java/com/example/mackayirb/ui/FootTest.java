@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
 
 import com.example.mackayirb.R;
+import com.example.mackayirb.utils.OtherUsefulFunction;
 
 import org.junit.runner.RunWith;
 
@@ -28,59 +29,13 @@ public class FootTest extends InitTest {
             getPreparedFakeData().bleData.lastReceivedData.get(
                     getPreparedFakeData().bluetoothGattService).get(
                     getPreparedFakeData().bluetoothGattCharacteristic).add(
-                    new byte[]{
-                            type,
-                            (byte) i,
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                    }
+                    OtherUsefulFunction.concatWithArrayCopy(
+                            new byte[]{
+                                    type,
+                                    (byte) i,
+                            },
+                            getRandomByteArray(58)
+                    )
             );
         }
     }

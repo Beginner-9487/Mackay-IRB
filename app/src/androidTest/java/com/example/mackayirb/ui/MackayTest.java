@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
 
 import com.example.mackayirb.R;
+import com.example.mackayirb.utils.OtherUsefulFunction;
 
 import org.junit.runner.RunWith;
 
@@ -25,14 +26,13 @@ public class MackayTest extends InitTest {
             getPreparedFakeData().bleData.lastReceivedData.get(
                     getPreparedFakeData().bluetoothGattService).get(
                     getPreparedFakeData().bluetoothGattCharacteristic).add(
-                    new byte[]{
-                            type,
-                            0x00, (byte) (getDataMAX()), 0x00, (byte) (i+1), 0x00, 0x00, (byte) (i*100/256), (byte) (i*100%256), 0x00, 0x00,
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                            getRandomByte(),
-                    }
+                    OtherUsefulFunction.concatWithArrayCopy(
+                            new byte[]{
+                                    type,
+                                    0x00, (byte) (getDataMAX()), 0x00, (byte) (i+1), 0x00, 0x00, (byte) (i*100/256), (byte) (i*100%256), 0x00, 0x00,
+                            },
+                            getRandomByteArray(4)
+                    )
             );
         }
     }

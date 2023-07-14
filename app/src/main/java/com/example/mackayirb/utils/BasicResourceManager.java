@@ -6,7 +6,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Build;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -133,6 +135,33 @@ public class BasicResourceManager {
     // TODO Permissions
     public static class Permissions {
 
+        public static ArrayList<String[]> PERMISSIONS = new ArrayList<>();
+        public static final byte REQUEST_ALL_PERMISSIONS_CODE = -1;
+        public static final byte REQUEST_BLUETOOTH_CODE = 0;
+        public static final byte REQUEST_LOCATION_CODE = 1;
+        public static final byte REQUEST_EXTERNAL_STORAGE_CODE = 2;
+        static {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PERMISSIONS.add(new String[]{
+                        Manifest.permission.BLUETOOTH_SCAN,
+//                        Manifest.permission.BLUETOOTH_ADVERTISE,
+                        Manifest.permission.BLUETOOTH_CONNECT,
+//                        Manifest.permission.BLUETOOTH_PRIVILEGED
+                });
+            } else {
+                PERMISSIONS.add(new String[]{});
+            }
+            PERMISSIONS.add(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS,
+            });
+            PERMISSIONS.add(new String[]{
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+            });
+        }
+
         public static boolean checkPermissions(String title, String[] permissions, int code) {
             return OtherUsefulFunction.checkPermissionList(
                     getCurrentFragment().getActivity(),
@@ -145,74 +174,45 @@ public class BasicResourceManager {
             );
         }
 
-        public static final int REQUEST_BLUETOOTH_CODE = 1;
-        public static final String[] BLUETOOTH_PERMISSIONS = new String[]{
-                Manifest.permission.BLUETOOTH_SCAN,
-//                Manifest.permission.BLUETOOTH_ADVERTISE,
-                Manifest.permission.BLUETOOTH_CONNECT,
-//                Manifest.permission.BLUETOOTH_PRIVILEGED
-        };
         /**
          * Check Bluetooth Permissions have been granted.
          * <p></p>
          * {@link OtherUsefulFunction#checkPermissionList(Activity, int, String, String[], int, FragmentManager, String)}
          */
-        public static boolean checkBluetoothPermissions() {
-            return checkPermissions(
-                    getCurrentFragment().getResources().getString(R.string.BluetoothPermissionAgreeFragment),
-                    BLUETOOTH_PERMISSIONS,
-                    REQUEST_BLUETOOTH_CODE
-            );
-        }
-
-        public static final int REQUEST_LOCATION_CODE = 10;
-        public static final String[] LOCATION_PERMISSIONS = new String[]{
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS,
-        };
-        /**
-         * Check Location Permissions have been granted.
-         * <p></p>
-         * {@link OtherUsefulFunction#checkPermissionList(Activity, int, String, String[], int, FragmentManager, String)}
-         */
-        public static boolean checkLocationPermissions() {
+        public static boolean checkGroupPermissions(@Nullable Byte ID) {
+            String title = null;
+            switch (ID.byteValue()) {
+                case REQUEST_BLUETOOTH_CODE:
+                    title = getCurrentFragment().getResources().getString(R.string.BluetoothPermissionAgreeFragment);
+                    break;
+                case REQUEST_LOCATION_CODE:
+                    title = getCurrentFragment().getResources().getString(R.string.LocationPermissionAgreeFragment);
+                    break;
+                case REQUEST_EXTERNAL_STORAGE_CODE:
+                    title = getCurrentFragment().getResources().getString(R.string.ExternalStoragePermissionAgreeFragment);
+                    break;
+                default:
+                    return checkAllPermissions();
+            }
             return checkPermissions(
                     getCurrentFragment().getResources().getString(R.string.LocationPermissionAgreeFragment),
-                    LOCATION_PERMISSIONS,
-                    REQUEST_LOCATION_CODE
-            );
-        }
-
-        public static final int REQUEST_EXTERNAL_STORAGE_CODE = 0;
-        public static final String[] STORAGE_PERMISSIONS = new String[]{
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-        };
-        /**
-         * Check External Storage Permissions have been granted.
-         * <p></p>
-         * {@link OtherUsefulFunction#checkPermissionList(Activity, int, String, String[], int, FragmentManager, String)}
-         */
-        public static boolean checkExternalStoragePermissions() {
-            return checkPermissions(
-                    getCurrentFragment().getResources().getString(R.string.ExternalStoragePermissionAgreeFragment),
-                    STORAGE_PERMISSIONS,
-                    REQUEST_EXTERNAL_STORAGE_CODE
+                    PERMISSIONS.get(ID),
+                    ID
             );
         }
 
         public static boolean checkAllPermissions() {
             if(isTesting) { return true; }
 
-            ArrayList<String> list = new ArrayList<>(Arrays.asList(BLUETOOTH_PERMISSIONS));
-            list.addAll(new ArrayList<>(Arrays.asList(LOCATION_PERMISSIONS)));
-            list.addAll(new ArrayList<>(Arrays.asList(STORAGE_PERMISSIONS)));
+            ArrayList<String> list = new ArrayList<>();
+            for(int i=0; i<PERMISSIONS.size(); i++) {
+                list.addAll(new ArrayList<>(Arrays.asList(PERMISSIONS.get(i))));
+            }
 //            Log.d(String.valueOf(list.size()));
             return checkPermissions(
                     getCurrentFragment().getResources().getString(R.string.AllPermissionsAgreeFragment),
                     (String[]) list.toArray(new String[list.size()]),
-                    REQUEST_EXTERNAL_STORAGE_CODE
+                    REQUEST_ALL_PERMISSIONS_CODE
             );
         }
 

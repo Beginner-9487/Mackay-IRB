@@ -102,8 +102,8 @@ public abstract class CentralScanFragment extends CentralFragment implements Cen
         try {
             return
                     // OtherUsefulFunction.checkBluetoothPermission(getActivity()) &&
-                    BasicResourceManager.Permissions.checkLocationPermissions() &&
-                            BasicResourceManager.Permissions.checkExternalStoragePermissions();
+                    BasicResourceManager.Permissions.checkGroupPermissions(BasicResourceManager.Permissions.REQUEST_LOCATION_CODE) &&
+                            BasicResourceManager.Permissions.checkGroupPermissions(BasicResourceManager.Permissions.REQUEST_EXTERNAL_STORAGE_CODE);
         } catch (Exception e) {
             return false;
         }

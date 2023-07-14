@@ -77,8 +77,8 @@ public class DataManager {
 
     // =================================================================================================
     // Temp UI
-    public void Send_All_C(byte[] command) {
-        mBLEServer.Send_All_C(command);
+    public void SendToAllCharacteristic(byte[] command) {
+        mBLEServer.SendToAllCharacteristic(command);
     }
 
 }

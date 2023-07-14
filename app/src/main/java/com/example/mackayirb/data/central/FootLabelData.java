@@ -1,5 +1,7 @@
 package com.example.mackayirb.data.central;
 
+import android.widget.Toast;
+
 import com.example.mackayirb.R;
 import com.example.mackayirb.utils.BasicResourceManager;
 import com.example.mackayirb.utils.Log;
@@ -60,37 +62,32 @@ public class FootLabelData extends CentralLabelData<FootDeviceData> {
         public Entry pressureCenter = new Entry(0.0f, 0.0f);
         public ArrayList<Float> otherInformation = new ArrayList<>();
         public Foot(byte[] bytes) {
+//            Toast.makeText(BasicResourceManager.getCurrentFragment().getContext(),
+//                    String.valueOf(bytes.length) + "," +
+//                            String.valueOf(bytes[0])
+//                    , Toast.LENGTH_SHORT).show();
+
+            int index = 0;
+
 //            Log.d("position");
-            position = bytes[0];
+            position = bytes[index];
+            index++;
 
 //            Log.d("pressures");
             for (int i=0; i<numberOfSensor; i++) {
-//                Log.d(String.valueOf(i/2));
-                if(i % 2 == 0) {
-                    byte[] b1 = OtherUsefulFunction.ByteSplitter(bytes[ 3 * (i/2) + 1 ]);
-                    byte[] b2 = OtherUsefulFunction.ByteSplitter(bytes[ 3 * (i/2) + 2 ]);
-                    pressures.add(
-                            (float) OtherUsefulFunction.byteArrayToSignedInt(
-                                    new byte[] {
-                                            b1[0],
-                                            (byte) ((b1[1] << 4) + b2[0])
-                                    }
-                            )
-                    );
-                } else {
-                    pressures.add(
-                            (float) OtherUsefulFunction.byteArrayToSignedInt(
-                                    new byte[] {
-                                            OtherUsefulFunction.ByteSplitter(bytes[ 3 * (i/2) + 2 ])[1],
-                                            bytes[ 3 * (i/2) + 3 ]
-                                    }
-                            )
-                    );
-                }
+                pressures.add(
+                        (float) OtherUsefulFunction.byteArrayToSignedInt(
+                                new byte[] {
+                                        bytes[index],
+                                        bytes[index+1]
+                                }
+                        )
+                );
                 pressureAverage += pressures.get(pressures.size()-1);
                 Entry xy = SensorPositions.getPositions(position).get(i);
                 pressureCenter.setX(pressureCenter.getX() + xy.getX() * pressures.get(pressures.size()-1));
                 pressureCenter.setY(pressureCenter.getY() + xy.getY() * pressures.get(pressures.size()-1));
+                index += 2;
             }
             pressureAverage /= pressures.size();
             pressureCenter.setX(pressureCenter.getX() / pressureAverage);
@@ -100,11 +97,14 @@ public class FootLabelData extends CentralLabelData<FootDeviceData> {
 
 //            Log.d("otherInformation");
             for (int i=0; i<3; i++) {
-                otherInformation.add((float) OtherUsefulFunction.byteArrayToSignedInt(new byte[]{bytes[i*2+27], bytes[i*2+28]}));
+                otherInformation.add((float) OtherUsefulFunction.byteArrayToSignedInt(new byte[]{bytes[index], bytes[index+1]}));
+                index += 2;
             }
-            otherInformation.add(OtherUsefulFunction.byteArrayToSignedInt(new byte[]{bytes[33], bytes[34], bytes[35]}) / 1000.f);
+            otherInformation.add(OtherUsefulFunction.byteArrayToSignedInt(new byte[]{bytes[index], bytes[index+1], bytes[index+2]}) / 1000.f);
+            index += 3;
             for (int i=0; i<14; i++) {
-                otherInformation.add((float) bytes[i+36]);
+                otherInformation.add((float) bytes[index]);
+                index++;
             }
 
 //            Log.d("finish");
@@ -155,6 +155,10 @@ public class FootLabelData extends CentralLabelData<FootDeviceData> {
     }
 
     public Foot CreateNewFootByBytes(byte[] bytes) {
+//        Toast.makeText(BasicResourceManager.getCurrentFragment().getContext(), "CreateNewFootByBytes: " + String.valueOf(bytes.length), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(BasicResourceManager.getCurrentFragment().getContext(),
+//                "CreateNewFootByBytes: " + OtherUsefulFunction.byteArrayToHexString(bytes, ", ")
+//                , Toast.LENGTH_SHORT).show();
         return new Foot(bytes);
     }
 
@@ -181,7 +185,9 @@ public class FootLabelData extends CentralLabelData<FootDeviceData> {
             // Log.e("Data is null.");
             return 0x00;
         }
+//        Toast.makeText(BasicResourceManager.getCurrentFragment().getContext(), "addNewData: start", Toast.LENGTH_SHORT).show();
         feet.add(CreateNewFootByBytes(bytes));
+//        Toast.makeText(BasicResourceManager.getCurrentFragment().getContext(), "addNewData: end", Toast.LENGTH_SHORT).show();
         return 0x01;
     }
 
@@ -211,7 +217,7 @@ public class FootLabelData extends CentralLabelData<FootDeviceData> {
                 case Foot.Position.RIGHT_FOOT:
                     return Foot_Right;
             }
-            return null;
+            return Foot_Left;
         }
         public static ArrayList<Entry> Foot_Left = new ArrayList<>(Arrays.asList(
                 new Entry(336.42857142857144f, 134.64285714285714f),
