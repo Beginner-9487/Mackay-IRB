@@ -3,7 +3,6 @@ package com.example.mackayirb.data.central;
 import com.example.mackayirb.SampleGattAttributes;
 import com.example.mackayirb.data.ble.BLEDataServer;
 import com.example.mackayirb.utils.BasicResourceManager;
-import com.example.mackayirb.utils.Log;
 import com.example.mackayirb.utils.MyNamingStrategy;
 
 import java.util.ArrayList;
@@ -25,9 +24,9 @@ public class FootDataManager extends CentralDataManager<FootDataManager, FootDev
     @Override
     public void updateLabelData(BLEDataServer.BLEData bleData) {
         try {
-            if(bleData.readLastReceivedData(SampleGattAttributes.subscribed_UUIDs.get(0)) != null) {
+            if(bleData.DataBuffer.getData() != null) {
 //                Log.d("updateLabelData");
-                findLabelDataByBleAndObject(bleData, LabelName, findDeviceDataByBle(bleData).getLabelIndicator()).addNewData(bleData.getLastReceivedData(SampleGattAttributes.subscribed_UUIDs.get(0)));
+                findLabelDataByBleAndObject(bleData, LabelName, findDeviceDataByBle(bleData).getLabelIndicator()).addNewData(bleData.DataBuffer.popData());
             }
         } catch (Exception e) {}
     }
@@ -66,8 +65,8 @@ public class FootDataManager extends CentralDataManager<FootDataManager, FootDev
     @Override
     public FootDeviceData createDeviceData(BLEDataServer.BLEData bleData, FootDataManager manager) {
         if (
-                BasicResourceManager.isTesting == true ||
-                        bleData.readLastReceivedData(SampleGattAttributes.subscribed_UUIDs.get(0)) != null
+            BasicResourceManager.isTesting == true ||
+            bleData.DataBuffer.getData() != null
         ) {
             return new FootDeviceData(bleData, manager);
         } else {
@@ -77,7 +76,7 @@ public class FootDataManager extends CentralDataManager<FootDataManager, FootDev
 
     @Override
     public FootLabelData createLabelData(BLEDataServer.BLEData bleData, FootDeviceData targetDevice) {
-        byte[] value = bleData.getLastReceivedData(SampleGattAttributes.subscribed_UUIDs.get(0));
+        byte[] value = bleData.DataBuffer.popData();
 //        Log.d(String.valueOf(value.length));
         String name = targetDevice.getCreatedLabelName();
 //        Log.d(name);

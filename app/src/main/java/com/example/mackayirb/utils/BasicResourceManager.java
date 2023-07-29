@@ -141,16 +141,12 @@ public class BasicResourceManager {
         public static final byte REQUEST_LOCATION_CODE = 1;
         public static final byte REQUEST_EXTERNAL_STORAGE_CODE = 2;
         static {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                PERMISSIONS.add(new String[]{
-                        Manifest.permission.BLUETOOTH_SCAN,
-//                        Manifest.permission.BLUETOOTH_ADVERTISE,
-                        Manifest.permission.BLUETOOTH_CONNECT,
-//                        Manifest.permission.BLUETOOTH_PRIVILEGED
-                });
-            } else {
-                PERMISSIONS.add(new String[]{});
-            }
+            PERMISSIONS.add(new String[]{
+                    Manifest.permission.BLUETOOTH_SCAN,
+//                    Manifest.permission.BLUETOOTH_ADVERTISE,
+                    Manifest.permission.BLUETOOTH_CONNECT,
+//                    Manifest.permission.BLUETOOTH_PRIVILEGED
+            });
             PERMISSIONS.add(new String[]{
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -164,11 +160,11 @@ public class BasicResourceManager {
 
         public static boolean checkPermissions(String title, String[] permissions, int code) {
             return OtherUsefulFunction.checkPermissionList(
-                    getCurrentFragment().getActivity(),
+                    getCurrentActivity(),
                     2,
                     title,
                     permissions,
-                    code,
+                    code + 0x10,
                     getCurrentFragment().getActivity().getSupportFragmentManager(),
                     getCurrentFragment().getResources().getString(R.string.BluetoothPermissionTag)
             );
@@ -180,7 +176,7 @@ public class BasicResourceManager {
          * {@link OtherUsefulFunction#checkPermissionList(Activity, int, String, String[], int, FragmentManager, String)}
          */
         public static boolean checkGroupPermissions(@Nullable Byte ID) {
-            String title = null;
+            String title;
             switch (ID.byteValue()) {
                 case REQUEST_BLUETOOTH_CODE:
                     title = getCurrentFragment().getResources().getString(R.string.BluetoothPermissionAgreeFragment);
@@ -195,7 +191,7 @@ public class BasicResourceManager {
                     return checkAllPermissions();
             }
             return checkPermissions(
-                    getCurrentFragment().getResources().getString(R.string.LocationPermissionAgreeFragment),
+                    title,
                     PERMISSIONS.get(ID),
                     ID
             );

@@ -3,28 +3,25 @@ package com.example.mackayirb.utils;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.view.MotionEvent;
+import android.os.Build;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
-import com.example.mackayirb.R;
 import com.example.mackayirb.fragment.PermissionAgreeFragment;
 import com.github.mikephil.charting.data.Entry;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class OtherUsefulFunction {
@@ -37,24 +34,26 @@ public class OtherUsefulFunction {
     public static boolean checkPermissionList(Activity activity, int levelOfRequired, @NonNull String Message, @NonNull String[] PermissionList, int RequestCode, @NonNull FragmentManager manager, @Nullable String tag) {
 
         boolean b = true;
-        boolean Rationale_lock = false;
 
-        for (String permission:PermissionList) {
-            Log.d(permission + ":" + String.valueOf(ContextCompat.checkSelfPermission(activity, permission)));
+        for (String permission : PermissionList) {
+//            Log.d(permission + ":" + String.valueOf(ContextCompat.checkSelfPermission(activity, permission)));
 //            Toast.makeText(activity, permission + ":" + String.valueOf(ContextCompat.checkSelfPermission(activity, permission)), Toast.LENGTH_SHORT).show();
-            if(ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+            boolean bluetoothPermissions = permission.equals(Manifest.permission.BLUETOOTH_SCAN) || permission.equals(Manifest.permission.BLUETOOTH_CONNECT);
+            if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
 //                Log.d(permission);
 //                Toast.makeText(activity, permission, Toast.LENGTH_SHORT).show();
-                b = false;
-                if(ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    Rationale_lock = true;
+                if (!(!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) && bluetoothPermissions)) {
+                    b = false;
+                    break;
                 }
-                break;
+            } else if(bluetoothPermissions) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                activity.startActivityForResult(enableBtIntent, BasicResourceManager.Permissions.REQUEST_BLUETOOTH_CODE);
             }
         }
 
-        if(!b) {
-            if (levelOfRequired > 0 || Rationale_lock) {
+        if (!b) {
+            if (levelOfRequired > 0) {
                 PermissionAgreeFragment dialog = new PermissionAgreeFragment(
                         Message,
                         PermissionList,
@@ -66,7 +65,6 @@ public class OtherUsefulFunction {
         }
 
         return b;
-
     }
 
     /**
@@ -147,7 +145,7 @@ public class OtherUsefulFunction {
     /**
      * Split the byte into two hexadecimal values
      */
-    public static byte[] ByteSplitter(byte value) {
+    public static byte[] byteSplitter(byte value) {
         byte highNibble = (byte) ((value & 0xF0) >> 4);
         byte lowNibble = (byte) (value & 0x0F);
         return new byte[]{highNibble, lowNibble};
@@ -162,7 +160,7 @@ public class OtherUsefulFunction {
      * <p>
      * {@link Configuration#UI_MODE_NIGHT_YES}
      */
-    public static int GetDataColor(Resources resources, int dataIndex, int dataSize, float contrastRatio) {
+    public static int getDataColor(Resources resources, int dataIndex, int dataSize, float contrastRatio) {
         return ColorUtils.HSLToColor(
                 new float[]{
                         (255.0f * dataIndex/dataSize),
@@ -173,14 +171,14 @@ public class OtherUsefulFunction {
     /**
      * Get black or white according to uiMode.
      * <p></p>
-     * {@link #GetDataColor(Resources resources, int 0, int 1, float 1.0f)}
+     * {@link #getDataColor(Resources resources, int 0, int 1, float 1.0f)}
      * <br>
      * H = 0.0f
      * <br>
      * L = 1.0f || 0.0f
      */
-    public static int GetBWColor(Resources resources) {
-        return GetDataColor(resources, 0, 1, 1.0f);
+    public static int getBWColor(Resources resources) {
+        return getDataColor(resources, 0, 1, 1.0f);
     }
 
     private static AlertDialog.Builder getYNDialogBuilder(Context context, String Title, @Nullable String Message, DialogInterface.OnClickListener yesListener, @Nullable DialogInterface.OnClickListener noListener) {
@@ -262,6 +260,81 @@ public class OtherUsefulFunction {
         double[] result = Arrays.copyOf(array1, array1.length + array2.length);
         System.arraycopy(array2, 0, result, array1.length, array2.length);
         return result;
+    }
+
+    public static float getMinOf(float[] array) {
+        float min = Float.MAX_VALUE;
+        for (float a: array) {
+            if(a < min) {
+                min = a;
+            }
+        }
+        return min;
+    }
+    public static float getMaxOf(float[] array) {
+        float max = 0;
+        for (float a: array) {
+            if(a > max) {
+                max = a;
+            }
+        }
+        return max;
+    }
+
+    public static float addDegree(float target, float degree) {
+        return (float) (target + Math.toRadians(degree));
+    }
+    public static float xAtoB(float x, float length, float direction) {
+        return x + length * (float) Math.cos(direction);
+    }
+    public static float yAtoB(float y, float length, float direction) {
+        return y + length * (float) Math.sin(direction);
+    }
+    public static Entry getP2Entry(Entry p1, float length, float direction) {
+        return new Entry(
+                xAtoB(p1.getX(), length, direction),
+                yAtoB(p1.getY(), length, direction)
+        );
+    }
+    public static Entry getMirrorEntry(Entry m1, Entry m2, Entry source) {
+        float[] abc = OtherUsefulFunction.getABCByTwoPoint(m1, m2);
+        float a = abc[0];
+        float b = abc[1];
+        float c = abc[2];
+        float temp = -2 * (a * source.getX() + b * source.getY() + c) /
+                (a * a + b * b);
+        float x = temp * a + source.getX();
+        float y = temp * b + source.getY();
+//        Log.d(String.valueOf(source.getX()) + "," + String.valueOf(source.getY()) + ";" + String.valueOf(x) + "," + String.valueOf(y));
+        return new Entry(x, y);
+    }
+    public static float[] getABCByTwoPoint(Entry p1, Entry p2) {
+        return new float[]{
+                (p1.getY() - p2.getY()),
+                -(p1.getX() - p2.getX()),
+                (p1.getX() * p2.getY()) - (p2.getX() * p1.getY())
+        };
+    }
+
+    public static class ByteIterator {
+        int pos = 0;
+        byte[] data;
+        public ByteIterator(byte[] array) {
+            this.data = array;
+        }
+        public byte next() {
+            return data[pos++];
+        }
+        public int index() {
+            return pos;
+        }
+        public byte[] array(int length) {
+            byte[] values = new byte[length];
+            for (int i=0; i<length; i++) {
+                values[i] = next();
+            }
+            return values;
+        }
     }
 
 }

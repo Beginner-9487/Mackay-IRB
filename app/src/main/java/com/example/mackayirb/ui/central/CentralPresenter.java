@@ -104,7 +104,7 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
 
     public void scanBLEPeripheral(boolean enabled) {
         try {
-            checkViewAttached();
+            // checkViewAttached();
 
             if (mScanDisposable != null && !mScanDisposable.isDisposed()) {
                 mScanDisposable.dispose();
@@ -153,6 +153,7 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
                     });
 
             myConnectedDisposable.put(device, s);
+            // Log.d("Connect to: " + device.getName());
         } catch (Exception e) {
             Log.e(e.getMessage());
         }

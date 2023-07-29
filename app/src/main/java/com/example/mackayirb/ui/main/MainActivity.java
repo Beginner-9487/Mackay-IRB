@@ -87,16 +87,13 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         }
 
         // Checks if Bluetooth is enabled
-        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            if (BasicResourceManager.Permissions.checkGroupPermissions(BasicResourceManager.Permissions.REQUEST_BLUETOOTH_CODE)) {
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-//                    return;
-                }
-                startActivityForResult(enableBtIntent, BasicResourceManager.Permissions.REQUEST_BLUETOOTH_CODE);
-            }
-            return;
-        }
+//        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//            if (BasicResourceManager.Permissions.checkGroupPermissions(BasicResourceManager.Permissions.REQUEST_BLUETOOTH_CODE)) {
+//                startActivityForResult(enableBtIntent, BasicResourceManager.Permissions.REQUEST_BLUETOOTH_CODE);
+//            }
+//            return;
+//        }
         setupPermissionAgreeFragment();
         setupToolbar();
     }
@@ -113,17 +110,14 @@ public class MainActivity extends BaseActivity implements MainMvpView {
 
         // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
         // fire an intent to display a dialog asking the user to grant permission to enable it.
-        if (!mBluetoothAdapter.isEnabled()) {
-            if (!mBluetoothAdapter.isEnabled()) {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                if (BasicResourceManager.Permissions.checkGroupPermissions(BasicResourceManager.Permissions.REQUEST_BLUETOOTH_CODE)) {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-//                        return;
-                    }
-                    startActivityForResult(enableBtIntent, BasicResourceManager.Permissions.REQUEST_BLUETOOTH_CODE);
-                }
-            }
-        }
+//        if (!mBluetoothAdapter.isEnabled()) {
+//            if (!mBluetoothAdapter.isEnabled()) {
+//                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//                if (BasicResourceManager.Permissions.checkGroupPermissions(BasicResourceManager.Permissions.REQUEST_BLUETOOTH_CODE)) {
+//                    startActivityForResult(enableBtIntent, BasicResourceManager.Permissions.REQUEST_BLUETOOTH_CODE);
+//                }
+//            }
+//        }
     }
 
     @Override

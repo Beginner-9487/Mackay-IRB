@@ -18,6 +18,7 @@ import com.example.mackayirb.data.ble.DataManager;
 import com.example.mackayirb.ui.central.CentralPresenter;
 import com.example.mackayirb.ui.main.MainActivity;
 import com.example.mackayirb.utils.BasicResourceManager;
+import com.example.mackayirb.utils.CircularBuffer;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -93,9 +94,7 @@ public abstract class InitTest {
         prepareToReturn.bluetoothGattService = bluetoothGattService;
         prepareToReturn.bluetoothGattCharacteristic = bluetoothGattCharacteristic;
         prepareToReturn.bleData = bleData;
-        prepareToReturn.bleData.lastReceivedData = new HashMap<>();
-        prepareToReturn.bleData.lastReceivedData.put(bluetoothGattService, new HashMap<BluetoothGattCharacteristic, ArrayList<byte[]>>());
-        prepareToReturn.bleData.lastReceivedData.get(bluetoothGattService).put(bluetoothGattCharacteristic, new ArrayList<byte[]>());
+        prepareToReturn.bleData.DataBuffer = new CircularBuffer(BLEDataServer.BLEDataBufferSize);
 
         return prepareToReturn;
     }

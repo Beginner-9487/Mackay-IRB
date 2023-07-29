@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.IBinder;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -30,9 +29,8 @@ import androidx.core.app.NotificationCompat;
 import com.example.mackayirb.R;
 import com.example.mackayirb.SampleGattAttributes;
 import com.example.mackayirb.injector.ApplicationContext;
-import com.example.mackayirb.utils.BasicResourceManager;
+import com.example.mackayirb.utils.CircularBuffer;
 import com.example.mackayirb.utils.Log;
-import com.example.mackayirb.utils.OtherUsefulFunction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -208,7 +206,7 @@ public class BLEDataServer extends Service {
 //                return;
             }
 
-            Log.e(gatt.getDevice().getName() + ": newState: " + newState);
+            Log.d(gatt.getDevice().getName() + ": newState: " + newState);
 
             super.onConnectionStateChange(gatt, status, newState);
             BLEData d = findBLEData(gatt);
@@ -237,9 +235,7 @@ public class BLEDataServer extends Service {
                 for (BluetoothGattService service : gatt.getServices()) {
                     for (BluetoothGattCharacteristic characteristic : service.getCharacteristics()) {
                         if (SampleGattAttributes.checkSubscribed(String.valueOf(characteristic.getUuid()))) {
-                            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-//                                return;
-                            }
+                            Log.d("Subscribed: " + characteristic.getUuid().toString());
                             boolean success = gatt.setCharacteristicNotification(characteristic, true);
                             if (success) {
                                 // 来源：http://stackoverflow.com/questions/38045294/oncharacteristicchanged-not-called-with-ble
@@ -268,6 +264,7 @@ public class BLEDataServer extends Service {
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicRead(gatt, characteristic, status);
+//            Log.d(String.valueOf(characteristic.getValue().length));
             if (status == BluetoothGatt.GATT_SUCCESS) {
 //                Toast.makeText(mContext, "onCharacteristicRead: " + characteristic.getUuid().toString(), Toast.LENGTH_SHORT).show();
                 whenFetchingData(gatt, characteristic);
@@ -282,6 +279,7 @@ public class BLEDataServer extends Service {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
+//            Log.d(String.valueOf(characteristic.getValue().length));
 //            Toast.makeText(mContext, "onCharacteristicChanged: " + characteristic.getUuid().toString(), Toast.LENGTH_SHORT).show();
             whenFetchingData(gatt, characteristic);
         }
@@ -408,11 +406,7 @@ public class BLEDataServer extends Service {
         // disconnect from all gatt
     }
 
-    public void whenFetchingData(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-//        Toast.makeText(mContext, "whenFetchingData: \n" + characteristic.getUuid().toString(), Toast.LENGTH_SHORT).show();
-//        Toast.makeText(BasicResourceManager.getCurrentFragment().getContext(), "whenFetchingData: " +
-//                OtherUsefulFunction.byteArrayToHexString(characteristic.getValue(), ", ")
-//                , Toast.LENGTH_SHORT).show();
+    synchronized public void whenFetchingData(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
         updateLastReceivedData(gatt, characteristic);
     }
 
@@ -420,14 +414,7 @@ public class BLEDataServer extends Service {
         BLEData d = findBLEData(gatt);
         List<ObservableEmitter<BLEData>> subscribers = findObservableEmitter(gatt);
 
-        if (!d.lastReceivedData.containsKey(characteristic.getService())) {
-            d.lastReceivedData.put(characteristic.getService(), new HashMap());
-        }
-        if (!d.lastReceivedData.get(characteristic.getService()).containsKey(characteristic)) {
-            d.lastReceivedData.get(characteristic.getService()).put(characteristic, new ArrayList<byte[]>());
-        }
-        d.lastReceivedData.get(characteristic.getService()).get(characteristic).add(characteristic.getValue());
-        // Log.d(String.valueOf(d.lastReceivedData.get(characteristic.getService()).get(characteristic).size()));
+        d.DataBuffer.addData(characteristic.getValue());
 
         for (ObservableEmitter<BLEData> s : subscribers) {
             s.onNext(d);
@@ -546,47 +533,19 @@ public class BLEDataServer extends Service {
         } catch (Exception e) {}
     }
 
-    public byte[] getDeviceData(BluetoothDevice bluetoothDevice, String UUID) {
-        return findBLEDataByDevice(bluetoothDevice).getLastReceivedData(UUID);
-    }
-
     // ================================================================================
     // TODO BLEData
+
+    public static int BLEDataBufferSize = 100;
 
     public class BLEData {
         public BluetoothDevice device;
         public int rssi;
         public int connectedState = BluetoothProfile.STATE_DISCONNECTED;
         public List<BluetoothGattService> services; // 從這裡讀取 UUID, Properties, Value, Descriptor
-        public HashMap<BluetoothGattService, HashMap<BluetoothGattCharacteristic, ArrayList<byte[]>>> lastReceivedData = new HashMap<>();
+        public CircularBuffer DataBuffer = new CircularBuffer(BLEDataBufferSize);
         public BLEData(BluetoothDevice device) {
             this.device = device;
-        }
-        public byte[] getLastReceivedData(String UUID) {
-            return processLastReceivedData(UUID, true);
-
-        }
-        public byte[] readLastReceivedData(String UUID) {
-            return processLastReceivedData(UUID, false);
-        }
-        synchronized private byte[] processLastReceivedData(String UUID, boolean GetOrRead) {
-            for (HashMap<BluetoothGattCharacteristic, ArrayList<byte[]>> s:lastReceivedData.values()) {
-                for (Map.Entry<BluetoothGattCharacteristic, ArrayList<byte[]>> c:s.entrySet()) {
-                    // Log.d(String.valueOf(c.getKey().getUuid()) + ":" + UUID);
-                    if(String.valueOf(c.getKey().getUuid()).equals(UUID)) {
-                        // Log.d(String.valueOf(c.getValue().size()));
-                        if(c.getValue().size() > 0) {
-                            if(GetOrRead) {
-                                // Log.d(OtherUsefulFunction.byteArrayToHexString(c.getValue().get(0), ","));
-                                return c.getValue().remove(0);
-                            } else {
-                                return c.getValue().get(0);
-                            }
-                        }
-                    }
-                }
-            }
-            return null;
         }
     }
 

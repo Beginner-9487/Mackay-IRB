@@ -3,21 +3,23 @@ package com.example.mackayirb.utils;
 public class ShapeData {
 
     public static final byte ARROW = 0;
-    public static final byte CIRCLE = 1;
-    public static final byte POINT = 2;
+    public static final byte BORDERED_ARROW = 1;
+    public static final byte CIRCLE = 2;
+    public static final byte BORDERED_CIRCLE = 3;
+    public static final byte CROSS = 4;
 
     private int shapeType;
     private float x;
     private float y;
     private float intensity;
-    private float orientation;
+    private float direction;
 
-    public ShapeData(byte shapeType, float x, float y, float intensity, float orientationRadian) {
+    public ShapeData(byte shapeType, float x, float y, float intensity, float direction) {
         this.shapeType = shapeType;
         this.x = x;
         this.y = y;
         this.intensity = intensity;
-        this.orientation = orientationRadian;
+        this.direction = direction;
     }
 
     public int getShapeType() {
@@ -41,10 +43,10 @@ public class ShapeData {
     public void setIntensity(float intensity) {
         this.intensity = intensity;
     }
-    public float getOrientation() {
-        return orientation;
+    public float getDirection() {
+        return direction;
     }
-    public void setOrientation(float orientation) {
-        this.orientation = orientation;
+    public void setDirection(float direction) {
+        this.direction = direction;
     }
 }

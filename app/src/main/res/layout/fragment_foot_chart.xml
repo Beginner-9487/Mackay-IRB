@@ -11,7 +11,7 @@
         android:paddingRight="16dp"
         android:paddingBottom="16dp">
 
-        <com.example.mackayirb.utils.FootCanvas
+        <com.example.mackayirb.ui.central.FootCanvas
             android:id="@+id/FootCanvas"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

@@ -25,9 +25,9 @@ public class MackayDataManager extends CentralDataManager<MackayDataManager, Mac
     @Override
     public void updateLabelData(BLEDataServer.BLEData bleData) {
         try {
-            if(bleData.readLastReceivedData(SampleGattAttributes.subscribed_UUIDs.get(0)) != null) {
+            if(bleData.DataBuffer.getData() != null) {
 //                Log.d("updateLabelData");
-                findLabelDataByBleAndObject(bleData, LabelName, findDeviceDataByBle(bleData).getLabelIndicator()).addNewData(bleData.getLastReceivedData(SampleGattAttributes.subscribed_UUIDs.get(0)));
+                findLabelDataByBleAndObject(bleData, LabelName, findDeviceDataByBle(bleData).getLabelIndicator()).addNewData(bleData.DataBuffer.popData());
             }
         } catch (Exception e) {}
     }
@@ -65,8 +65,8 @@ public class MackayDataManager extends CentralDataManager<MackayDataManager, Mac
     @Override
     public MackayDeviceData createDeviceData(BLEDataServer.BLEData bleData, MackayDataManager manager) {
         if (
-                BasicResourceManager.isTesting == true ||
-                bleData.readLastReceivedData(SampleGattAttributes.subscribed_UUIDs.get(0)) != null
+            BasicResourceManager.isTesting == true ||
+            bleData.DataBuffer.getData() != null
         ) {
             return new MackayDeviceData(bleData, manager);
         } else {
@@ -76,7 +76,7 @@ public class MackayDataManager extends CentralDataManager<MackayDataManager, Mac
 
     @Override
     public MackayLabelData createLabelData(BLEDataServer.BLEData bleData, MackayDeviceData targetDevice) {
-        byte[] value = bleData.getLastReceivedData(SampleGattAttributes.subscribed_UUIDs.get(0));
+        byte[] value = bleData.DataBuffer.popData();
         String name = targetDevice.getCreatedLabelName();
         if(value != null && name != null) {
             MackayLabelData data = new MackayLabelData(targetDevice, name);

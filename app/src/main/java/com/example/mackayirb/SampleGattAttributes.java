@@ -41,7 +41,8 @@ public class SampleGattAttributes {
         attributes.put("00002a37-0000-1000-8000-00805f9b34fb", "Heart Rate Measurement");
         attributes.put("00002a29-0000-1000-8000-00805f9b34fb", "Manufacturer Name String");
 
-        // C3 & C6
+        // C1-C6
+        attributes.put("0000fff0-0000-1000-8000-00805f9b34fb", "Service: C1-C6");
         attributes.put("0000fff1-0000-1000-8000-00805f9b34fb", "C1");
         attributes.put("0000fff2-0000-1000-8000-00805f9b34fb", "C2");
         attributes.put("0000fff3-0000-1000-8000-00805f9b34fb", "C3");
@@ -51,10 +52,12 @@ public class SampleGattAttributes {
 
         // ================================================================================
         // subscribed
+        input_UUIDs = getUUIDsByReference(new String[]{"C3"});
+        subscribed_UUIDs = getUUIDsByReference(new String[]{"C6"});
 //        input_UUIDs = getUUIDsByReference(new String[]{"C1","C3"});
 //        subscribed_UUIDs = getUUIDsByReference(new String[]{"C4","C6"});
-        input_UUIDs = getUUIDsByReference(new String[]{"C1","C2","C3","C4","C5","C6"});
-        subscribed_UUIDs = getUUIDsByReference(new String[]{"C1","C2","C3","C4","C5","C6"});
+//        input_UUIDs = getUUIDsByReference(new String[]{"C1","C2","C3","C4","C5","C6"});
+//        subscribed_UUIDs = getUUIDsByReference(new String[]{"C1","C2","C3","C4","C5","C6"});
 
     }
 

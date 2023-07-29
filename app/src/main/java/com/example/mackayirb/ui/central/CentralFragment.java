@@ -29,7 +29,7 @@ public class CentralFragment extends BaseFragment implements CentralMvpView {
     public void onAttach(Context context) {
         super.onAttach(context);
         Log.d("onAttach: " + getClass().getSimpleName());
-        BasicResourceManager.setCurrentFragment(this);
+//        BasicResourceManager.setCurrentFragment(this);
         if(BasicResourceManager.Permissions.checkAllPermissions()) {
             init();
         }
@@ -45,7 +45,7 @@ public class CentralFragment extends BaseFragment implements CentralMvpView {
     public void onResume() {
         super.onResume();
         Log.d("onResume: " + getClass().getSimpleName());
-        BasicResourceManager.setCurrentFragment(this);
+//        BasicResourceManager.setCurrentFragment(this);
         startHandler();
     }
 

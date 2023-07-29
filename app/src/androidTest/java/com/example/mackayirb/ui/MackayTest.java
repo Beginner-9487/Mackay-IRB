@@ -23,16 +23,14 @@ public class MackayTest extends InitTest {
         byte type = (byte) (Math.random() * getActivityRule().getActivity().getResources().getStringArray(R.array.TypeLabels).length);
 
         for(int i=0; i<getDataMAX(); i++) {
-            getPreparedFakeData().bleData.lastReceivedData.get(
-                    getPreparedFakeData().bluetoothGattService).get(
-                    getPreparedFakeData().bluetoothGattCharacteristic).add(
-                    OtherUsefulFunction.concatWithArrayCopy(
-                            new byte[]{
-                                    type,
-                                    0x00, (byte) (getDataMAX()), 0x00, (byte) (i+1), 0x00, 0x00, (byte) (i*100/256), (byte) (i*100%256), 0x00, 0x00,
-                            },
-                            getRandomByteArray(4)
-                    )
+            getPreparedFakeData().bleData.DataBuffer.addData(
+                OtherUsefulFunction.concatWithArrayCopy(
+                    new byte[]{
+                            type,
+                            0x00, (byte) (getDataMAX()), 0x00, (byte) (i+1), 0x00, 0x00, (byte) (i*100/256), (byte) (i*100%256), 0x00, 0x00,
+                    },
+                    getRandomByteArray(4)
+                )
             );
         }
     }

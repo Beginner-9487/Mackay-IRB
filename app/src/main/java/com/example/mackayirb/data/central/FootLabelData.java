@@ -1,10 +1,7 @@
 package com.example.mackayirb.data.central;
 
-import android.widget.Toast;
-
 import com.example.mackayirb.R;
 import com.example.mackayirb.utils.BasicResourceManager;
-import com.example.mackayirb.utils.Log;
 import com.example.mackayirb.utils.OtherUsefulFunction;
 import com.github.mikephil.charting.data.Entry;
 
@@ -25,117 +22,92 @@ public class FootLabelData extends CentralLabelData<FootDeviceData> {
     public byte levelOfDownload = 0;
     public int type = -1;
 
-    private static final byte numberOfSensor = 17;
-//    private static final byte numberOfSensor = 12;
+    public static class Position {
+        public static final byte LEFT_FOOT = 0x0a;
+        public static final byte RIGHT_FOOT = 0x0b;
+    }
+    public static class MainFloatList {
+        public static final byte ShearForce = 0;
+        public static final byte Pressures = 1;
+        public static final byte Temperatures = 2;
+        public static final byte Average = 3;
+    }
+    public static class ViceFloat {
+        public static final byte AccX = 0;
+        public static final byte AccY = 1;
+        public static final byte AccZ = 2;
+        public static final byte ClockTime = 3;
+        public static final byte COP_X = 4;
+        public static final byte COP_Y = 5;
+        public static final byte Roll_H = 6;
+        public static final byte Roll_L = 7;
+        public static final byte Pitch_H = 8;
+        public static final byte Pitch_L = 9;
+        public static final byte Yaw_H = 10;
+        public static final byte Yaw_L = 11;
+        public static final byte GyroX_H = 12;
+        public static final byte GyroX_L = 13;
+        public static final byte GyroY_H = 14;
+        public static final byte GyroY_L = 15;
+        public static final byte GyroZ_H = 16;
+        public static final byte GyroZ_L = 17;
 
+        public static final byte[] Triple = new byte[]{ClockTime};
+    }
     private ArrayList<Foot> feet = new ArrayList<>();
     public class Foot {
-        public class Position {
-//            public static final byte LEFT_FOOT = 0x04;
-//            public static final byte RIGHT_FOOT = 0x05;
-            public static final byte LEFT_FOOT = 0x0a;
-            public static final byte RIGHT_FOOT = 0x0b;
-        }
-        public class OtherInformation {
-            public static final byte AccX = 0x00;
-            public static final byte AccY = 0x01;
-            public static final byte AccZ = 0x02;
-            public static final byte ClockTime = 0x03;
-            public static final byte COP_X = 0x04;
-            public static final byte COP_Y = 0x05;
-            public static final byte Roll_H = 0x06;
-            public static final byte Roll_L = 0x07;
-            public static final byte Pitch_H = 0x08;
-            public static final byte Pitch_L = 0x09;
-            public static final byte Yaw_H = 0x0a;
-            public static final byte Yaw_L = 0x0b;
-            public static final byte GyroX_H = 0x0c;
-            public static final byte GyroX_L = 0x0d;
-            public static final byte GyroY_H = 0x0e;
-            public static final byte GyroY_L = 0x0f;
-            public static final byte GyroZ_H = 0x10;
-            public static final byte GyroZ_L = 0x11;
-        }
         public byte position;
-        public ArrayList<Float> pressures = new ArrayList<>();
-        public float pressureAverage = 0.0f;
-        public Entry pressureCenter = new Entry(0.0f, 0.0f);
-        public ArrayList<Float> otherInformation = new ArrayList<>();
+        public ArrayList<float[]> mainFloatList = new ArrayList<>();
+        public Entry[] mainCenterEntry = new Entry[MainFloatList.Average];
+        public float[] viceFloat = new float[ViceFloat.GyroZ_L];
         public Foot(byte[] bytes) {
-//            Toast.makeText(BasicResourceManager.getCurrentFragment().getContext(),
-//                    String.valueOf(bytes.length) + "," +
-//                            String.valueOf(bytes[0])
-//                    , Toast.LENGTH_SHORT).show();
 
-            int index = 0;
+            OtherUsefulFunction.ByteIterator data = new OtherUsefulFunction.ByteIterator(bytes);
 
-//            Log.d("position");
-            position = bytes[index];
-            index++;
+            position = data.next();
 
-//            Log.d("pressures");
-            for (int i=0; i<numberOfSensor; i++) {
-                pressures.add(
-                        (float) OtherUsefulFunction.byteArrayToSignedInt(
-                                new byte[] {
-                                        bytes[index],
-                                        bytes[index+1]
-                                }
-                        )
+            for(int m = 0; m< MainFloatList.Average; m++) {
+                mainFloatList.add(new float[getNumberOfSensor()]);
+            }
+            mainFloatList.add(new float[MainFloatList.Average]);
+
+            // mainFloatList, mainEntry
+            for(int m = 0; m< MainFloatList.Average; m++) {
+                mainCenterEntry[m] = new Entry(0f, 0f);
+                for (int i=0; i<getNumberOfSensor(); i++) {
+                    mainFloatList.get(m)[i] = (float) OtherUsefulFunction.byteArrayToSignedInt(
+                            data.array(2)
+                    );
+                    mainFloatList.get(MainFloatList.Average)[m] += mainFloatList.get(m)[i];
+                    Entry xy = getSensorList().get(i);
+                    mainCenterEntry[m].setX(mainCenterEntry[m].getX() + xy.getX() * mainFloatList.get(m)[i]);
+                    mainCenterEntry[m].setY(mainCenterEntry[m].getY() + xy.getY() * mainFloatList.get(m)[i]);
+                }
+                mainCenterEntry[m].setX(mainCenterEntry[m].getX() / mainFloatList.get(MainFloatList.Average)[m]);
+                mainCenterEntry[m].setY(mainCenterEntry[m].getY() / mainFloatList.get(MainFloatList.Average)[m]);
+                mainFloatList.get(MainFloatList.Average)[m] /= getNumberOfSensor();
+            }
+
+            // viceFloat
+            viceFloat = new float[ViceFloat.GyroZ_L];
+            for (int i=0; i<ViceFloat.GyroZ_L; i++) {
+                byte lock = 2;
+                if(Arrays.asList(ViceFloat.Triple).contains(i)) { lock = (byte) 3; }
+                viceFloat[i] = (float) OtherUsefulFunction.byteArrayToSignedInt(
+                        data.array(lock)
                 );
-                pressureAverage += pressures.get(pressures.size()-1);
-                Entry xy = SensorPositions.getPositions(position).get(i);
-                pressureCenter.setX(pressureCenter.getX() + xy.getX() * pressures.get(pressures.size()-1));
-                pressureCenter.setY(pressureCenter.getY() + xy.getY() * pressures.get(pressures.size()-1));
-                index += 2;
             }
-            pressureAverage /= pressures.size();
-            pressureCenter.setX(pressureCenter.getX() / pressureAverage);
-            pressureCenter.setY(pressureCenter.getY() / pressureAverage);
-//            pressureCenter.setX((float) (Math.random() * 600f));
-//            pressureCenter.setY((float) (Math.random() * 1500f));
-
-//            Log.d("otherInformation");
-            for (int i=0; i<3; i++) {
-                otherInformation.add((float) OtherUsefulFunction.byteArrayToSignedInt(new byte[]{bytes[index], bytes[index+1]}));
-                index += 2;
-            }
-            otherInformation.add(OtherUsefulFunction.byteArrayToSignedInt(new byte[]{bytes[index], bytes[index+1], bytes[index+2]}) / 1000.f);
-            index += 3;
-            for (int i=0; i<14; i++) {
-                otherInformation.add((float) bytes[index]);
-                index++;
-            }
-
-//            Log.d("finish");
+        }
+        public ArrayList<Entry> getSensorList() {
+            return SensorPositions.getPositions(this.position);
+        }
+        public int getNumberOfSensor() {
+            return 31;
         }
     }
 
     public ArrayList<Foot> getFeet() {
         return feet;
-    }
-    public ArrayList<ArrayList<Foot>> getFeetSortedByPosition() {
-        ArrayList<ArrayList<Foot>> sortedFeet = new ArrayList<>();
-        for (Foot foot:feet) {
-            if(sortedFeet.size() == 0) {
-                sortedFeet.add(new ArrayList<>());
-                sortedFeet.get(sortedFeet.size()-1).add(foot);
-            } else {
-                boolean lock = true;
-                for (ArrayList<Foot> f:sortedFeet) {
-                    if(foot.position == f.get(0).position) {
-                        f.add(foot);
-                        lock = false;
-                        break;
-                    }
-                }
-                if (lock) {
-                    sortedFeet.add(new ArrayList<>());
-                    sortedFeet.get(sortedFeet.size()-1).add(foot);
-                }
-            }
-        }
-        return sortedFeet;
     }
     public ArrayList<Foot> getNewestFeet() {
         ArrayList<Foot> newestFeet = new ArrayList<>();
@@ -212,50 +184,78 @@ public class FootLabelData extends CentralLabelData<FootDeviceData> {
     public static class SensorPositions {
         public static ArrayList<Entry> getPositions(byte position) {
             switch (position) {
-                case Foot.Position.LEFT_FOOT:
+                case Position.LEFT_FOOT:
                     return Foot_Left;
-                case Foot.Position.RIGHT_FOOT:
+                case Position.RIGHT_FOOT:
                     return Foot_Right;
             }
             return Foot_Left;
         }
         public static ArrayList<Entry> Foot_Left = new ArrayList<>(Arrays.asList(
-                new Entry(336.42857142857144f, 134.64285714285714f),
-                new Entry(225.35714285714286f, 134.64285714285714f),
-                new Entry(133.57142857142858f, 210.35714285714286f),
-                new Entry(317.5f, 310.0f),
-                new Entry(212.85714285714286f, 310.0f),
-                new Entry(113.57142857142858f, 342.8571428571429f),
-                new Entry(303.5714285714286f, 501.42857142857144f),
-                new Entry(210.35714285714286f, 501.42857142857144f),
-                new Entry(109.64285714285715f, 501.42857142857144f),
-                new Entry(233.21428571428572f, 689.2857142857143f),
-                new Entry(103.21428571428572f, 699.2857142857142f),
-                new Entry(226.7857142857143f, 900.7142857142858f),
-                new Entry(114.64285714285715f, 856.7857142857143f),
-                new Entry(226.7857142857143f, 1017.8571428571429f),
-                new Entry(114.64285714285715f, 1017.8571428571429f),
-                new Entry(226.7857142857143f, 1172.8571428571431f),
-                new Entry(114.64285714285715f, 1172.8571428571431f)
+                new Entry(165.0f, 1716.0f),
+                new Entry(294.25f, 1710.5f),
+                new Entry(167.75f, 1564.75f),
+                new Entry(297.0f, 1559.25f),
+                new Entry(173.25f, 1413.5f),
+                new Entry(299.75f, 1408.0f),
+                new Entry(176.0f, 1278.75f),
+                new Entry(302.5f, 1276.0f),
+                new Entry(178.75f, 1078.0f),
+                new Entry(305.25f, 1075.25f),
+                new Entry(385.0f, 965.25f),
+                new Entry(132.0f, 965.25f),
+                new Entry(434.5f, 825.0f),
+                new Entry(280.5f, 822.25f),
+                new Entry(129.25f, 816.75f),
+                new Entry(486.75f, 695.75f),
+                new Entry(365.75f, 690.25f),
+                new Entry(220.0f, 684.75f),
+                new Entry(88.0f, 679.25f),
+                new Entry(506.0f, 561.0f),
+                new Entry(382.25f, 552.75f),
+                new Entry(247.5f, 547.25f),
+                new Entry(123.75f, 539.0f),
+                new Entry(506.0f, 434.5f),
+                new Entry(343.75f, 420.75f),
+                new Entry(178.75f, 412.5f),
+                new Entry(508.75f, 310.75f),
+                new Entry(360.25f, 297.0f),
+                new Entry(211.75f, 286.0f),
+                new Entry(445.5f, 198.0f),
+                new Entry(313.5f, 192.5f)
         ));
         public static ArrayList<Entry> Foot_Right = new ArrayList<>(Arrays.asList(
-                new Entry(535.7142857142858f, 134.64285714285714f),
-                new Entry(646.7857142857144f, 134.64285714285714f),
-                new Entry(738.5714285714287f, 210.35714285714286f),
-                new Entry(554.6428571428572f, 310.0f),
-                new Entry(659.2857142857143f, 310.0f),
-                new Entry(758.5714285714287f, 342.8571428571429f),
-                new Entry(568.5714285714287f, 501.42857142857144f),
-                new Entry(661.7857142857143f, 501.42857142857144f),
-                new Entry(762.5f, 501.42857142857144f),
-                new Entry(638.9285714285714f, 689.2857142857143f),
-                new Entry(768.9285714285714f, 699.2857142857142f),
-                new Entry(645.3571428571429f, 900.7142857142858f),
-                new Entry(757.5f, 856.7857142857143f),
-                new Entry(645.3571428571429f, 1017.8571428571429f),
-                new Entry(757.5f, 1017.8571428571429f),
-                new Entry(645.3571428571429f, 1172.8571428571431f),
-                new Entry(757.5f, 1172.8571428571431f)
+                new Entry(1080.75f, 1716.0f),
+                new Entry(951.5f, 1710.5f),
+                new Entry(1078.0f, 1564.75f),
+                new Entry(948.75f, 1559.25f),
+                new Entry(1072.5f, 1413.5f),
+                new Entry(946.0f, 1408.0f),
+                new Entry(1069.75f, 1278.75f),
+                new Entry(943.25f, 1276.0f),
+                new Entry(1067.0f, 1078.0f),
+                new Entry(940.5f, 1075.25f),
+                new Entry(1113.75f, 965.25f),
+                new Entry(860.75f, 965.25f),
+                new Entry(811.25f, 825.0f),
+                new Entry(965.25f, 822.25f),
+                new Entry(1116.5f, 816.75f),
+                new Entry(759.0f, 695.75f),
+                new Entry(880.0f, 690.25f),
+                new Entry(1025.75f, 684.75f),
+                new Entry(1157.75f, 679.25f),
+                new Entry(739.75f, 561.0f),
+                new Entry(863.5f, 552.75f),
+                new Entry(998.25f, 547.25f),
+                new Entry(1122.0f, 539.0f),
+                new Entry(739.75f, 434.5f),
+                new Entry(902.0f, 420.75f),
+                new Entry(1067.0f, 412.5f),
+                new Entry(737.0f, 310.75f),
+                new Entry(885.5f, 297.0f),
+                new Entry(1034.0f, 286.0f),
+                new Entry(800.25f, 198.0f),
+                new Entry(932.25f, 192.5f)
         ));
     }
 

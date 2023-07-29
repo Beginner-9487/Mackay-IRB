@@ -61,7 +61,7 @@ public class ChartDataMonitorAdapter extends RecyclerView.Adapter<ChartDataMonit
         MackayLabelData labelData = mLabelData.get(position);
 
         if(!isCardVisible(holder, labelData)){ return; }
-        int textColor = OtherUsefulFunction.GetDataColor(holder.resources, position, mLabelData.size(), 0.5f);
+        int textColor = OtherUsefulFunction.getDataColor(holder.resources, position, mLabelData.size(), 0.5f);
 
         setCardLabelName(holder, labelData, textColor);
         setCardType(holder, labelData, textColor);

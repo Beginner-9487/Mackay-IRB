@@ -36,7 +36,7 @@ public class MyNamingStrategy {
                 case MODE_XIE_ZHI_LONG:
                     setCurrentTime();
 //                    finalName = this.name + "_" + bleData.device.getName() + "_" + currentTime + "_(" + BasicResourceManager.getResources().getStringArray(R.array.DataTypes)[bleData.readLastReceivedData(SampleGattAttributes.subscribed_UUIDs.get(0))[0]] + ")";
-                    finalName = this.name + "_" + currentTime + "_(" + BasicResourceManager.getResources().getStringArray(R.array.TypeLabels)[bleData.readLastReceivedData(SampleGattAttributes.subscribed_UUIDs.get(0))[0]] + ")";
+                    finalName = this.name + "_" + currentTime + "_(" + BasicResourceManager.getResources().getStringArray(R.array.TypeLabels)[bleData.DataBuffer.getData()[0]] + ")";
                     break;
                 case All5s:
                     if(currentTime.equals("")) {

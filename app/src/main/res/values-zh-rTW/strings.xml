@@ -11,7 +11,7 @@
 
     <!--  BluetoothPermissionAgreeFragment  -->
     <string name="BluetoothPermissionTag">藍牙權限</string>
-    <string name="BluetoothPermissionAgreeFragment">請同意位置權限以便與藍牙裝置進行通訊</string>
+    <string name="BluetoothPermissionAgreeFragment">請同意藍牙權限以便與藍牙裝置進行通訊</string>
     <!--  LocationPermissionAgreeFragment  -->
     <string name="LocationPermissionTag">位置權限</string>
     <string name="LocationPermissionAgreeFragment">請同意位置權限以便啟動藍牙掃描功能</string>

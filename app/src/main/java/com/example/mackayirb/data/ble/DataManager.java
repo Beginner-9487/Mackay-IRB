@@ -71,10 +71,6 @@ public class DataManager {
         return mBLEServer.getAllBondedDevices();
     }
 
-    public byte[] getLastReceivedData(BluetoothDevice bluetoothDevice, String UUID) {
-        return mBLEServer.getDeviceData(bluetoothDevice, UUID);
-    }
-
     // =================================================================================================
     // Temp UI
     public void SendToAllCharacteristic(byte[] command) {

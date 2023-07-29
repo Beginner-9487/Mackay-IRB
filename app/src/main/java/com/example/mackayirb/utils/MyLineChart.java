@@ -30,11 +30,11 @@ public class MyLineChart extends LineChart {
     protected void init() {
         super.init();
         getLegend().setStackSpace(0.0f);    // 才不會使多條線段組合的這個方法露餡
-        getLegend().setTextColor(OtherUsefulFunction.GetBWColor(getResources()));
-        getXAxis().setTextColor(OtherUsefulFunction.GetBWColor(getResources()));
-        getAxisLeft().setTextColor(OtherUsefulFunction.GetBWColor(getResources()));
-        getAxisRight().setTextColor(OtherUsefulFunction.GetBWColor(getResources()));
-        getDescription().setTextColor(OtherUsefulFunction.GetBWColor(getResources()));
+        getLegend().setTextColor(OtherUsefulFunction.getBWColor(getResources()));
+        getXAxis().setTextColor(OtherUsefulFunction.getBWColor(getResources()));
+        getAxisLeft().setTextColor(OtherUsefulFunction.getBWColor(getResources()));
+        getAxisRight().setTextColor(OtherUsefulFunction.getBWColor(getResources()));
+        getDescription().setTextColor(OtherUsefulFunction.getBWColor(getResources()));
     }
 
     LineData splitData = new LineData();
@@ -142,9 +142,9 @@ public class MyLineChart extends LineChart {
             lineDataSet.setHighlightLineWidth(line_width);
             lineDataSet.setDrawHorizontalHighlightIndicator(false);
 
-            lineDataSet.setHighLightColor(OtherUsefulFunction.GetBWColor(getResources()));
-            lineDataSet.setColor(OtherUsefulFunction.GetDataColor(getResources(), dataIndex, groupList.size(), 0.5f));
-            lineDataSet.setValueTextColor(OtherUsefulFunction.GetDataColor(getResources(), dataIndex, groupList.size(), 0.5f));
+            lineDataSet.setHighLightColor(OtherUsefulFunction.getBWColor(getResources()));
+            lineDataSet.setColor(OtherUsefulFunction.getDataColor(getResources(), dataIndex, groupList.size(), 0.5f));
+            lineDataSet.setValueTextColor(OtherUsefulFunction.getDataColor(getResources(), dataIndex, groupList.size(), 0.5f));
         }
         splitData = new LineData(new ArrayList<ILineDataSet>(iLineDataSet));
 

@@ -248,55 +248,54 @@ public class MackayLabelData extends CentralLabelData<MackayDeviceData> {
     public boolean saveNewFile() {
         // Log.i("saveMyFile: " + labelName);
         try {
-            if(BasicResourceManager.Permissions.checkGroupPermissions(BasicResourceManager.Permissions.REQUEST_EXTERNAL_STORAGE_CODE)) {
+            markAsDownloaded();
 
-                markAsDownloaded();
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH-mm-ss");
+            String currentTime = sdf.format(calendar.getTime());
 
-                Calendar calendar = Calendar.getInstance();
-                SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH-mm-ss");
-                String currentTime = sdf.format(calendar.getTime());
+            // Log.i(labelName);
+            MyExcelFile file = new MyExcelFile();
+            String sdCardPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator;
+            file.createExcelWorkbook(sdCardPath + labelName + ".xls");
+            file.create_new_sheet(labelName);
 
-                // Log.i(labelName);
-                MyExcelFile file = new MyExcelFile();
-                String sdCardPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator;
-                file.createExcelWorkbook(sdCardPath + labelName + ".xls");
-                file.create_new_sheet(labelName);
+            // Add value in the cell
+            // Log.i(getRelatedUnit(SpecialLabel));
+            int rowIndex = 0;
+            file.write_file(0, rowIndex, 0, BasicResourceManager.getResources().getString(R.string.LabelName) + ": " + labelName);
+            rowIndex++;
+            file.write_file(0, rowIndex, 0, BasicResourceManager.getResources().getString(R.string.SaveFileTime) + ": " + currentTime);
+            rowIndex++;
+            file.write_file(0, rowIndex, 0, BasicResourceManager.getResources().getString(R.string.Type) + ": " + getRelatedUnit(TypeLabel) + " (" + String.valueOf(type) + ")");
+            rowIndex++;
+            file.write_file(0, rowIndex, 0, BasicResourceManager.getResources().getString(R.string.Number));
+            file.write_file(0, rowIndex, 1, getRelatedUnit(XLabel));
+            file.write_file(0, rowIndex, 2, getRelatedUnit(YLabel));
+            file.write_file(0, rowIndex, 3, getRelatedUnit(SpecialLabel));
 
-                // Add value in the cell
-                // Log.i(getRelatedUnit(SpecialLabel));
-                int rowIndex = 0;
-                file.write_file(0, rowIndex, 0, BasicResourceManager.getResources().getString(R.string.LabelName) + ": " + labelName);
-                rowIndex++;
-                file.write_file(0, rowIndex, 0, BasicResourceManager.getResources().getString(R.string.SaveFileTime) + ": " + currentTime);
-                rowIndex++;
-                file.write_file(0, rowIndex, 0, BasicResourceManager.getResources().getString(R.string.Type) + ": " + getRelatedUnit(TypeLabel) + " (" + String.valueOf(type) + ")");
-                rowIndex++;
-                file.write_file(0, rowIndex, 0, BasicResourceManager.getResources().getString(R.string.Number));
-                file.write_file(0, rowIndex, 1, getRelatedUnit(XLabel));
-                file.write_file(0, rowIndex, 2, getRelatedUnit(YLabel));
-                file.write_file(0, rowIndex, 3, getRelatedUnit(SpecialLabel));
+            // Log.i(String.valueOf(getAllXYSpecial().entrySet().size()));
+            for (Map.Entry<Integer, ArrayList<Float>> data:getAllXYSpecial().entrySet()) {
+                file.write_file(0, (int) (rowIndex+1+data.getKey()), 0, String.valueOf(data.getKey()));
+                file.write_file(0, rowIndex+1+data.getKey(), 1, String.valueOf(data.getValue().get(0)));
+                file.write_file(0, rowIndex+1+data.getKey(), 2, String.valueOf(data.getValue().get(1)));
+                file.write_file(0, rowIndex+1+data.getKey(), 3, String.valueOf(data.getValue().get(2)));
+            }
 
-                // Log.i(String.valueOf(getAllXYSpecial().entrySet().size()));
-                for (Map.Entry<Integer, ArrayList<Float>> data:getAllXYSpecial().entrySet()) {
-                    file.write_file(0, (int) (rowIndex+1+data.getKey()), 0, String.valueOf(data.getKey()));
-                    file.write_file(0, rowIndex+1+data.getKey(), 1, String.valueOf(data.getValue().get(0)));
-                    file.write_file(0, rowIndex+1+data.getKey(), 2, String.valueOf(data.getValue().get(1)));
-                    file.write_file(0, rowIndex+1+data.getKey(), 3, String.valueOf(data.getValue().get(2)));
-                }
+            // Log.d(file.toString());
 
-                // Log.d(file.toString());
-
-                // Save as Excel XLSX file
-                if (file.exportDataIntoWorkbook()) {
-                    Log.i(BasicResourceManager.getResources().getString(R.string.Temp_UI_save_toast));
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
+            // Save as Excel XLSX file
+            if (file.exportDataIntoWorkbook()) {
+                // Log.i(BasicResourceManager.getResources().getString(R.string.Temp_UI_save_toast));
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
                             Toast.makeText(BasicResourceManager.getCurrentActivity(), labelName + ": " + BasicResourceManager.getResources().getString(R.string.Temp_UI_save_toast), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    return true;
-                }
+                        } catch (Exception e) {}
+                    }
+                });
+                return true;
             }
         } catch (Exception e) {}
         return false;
