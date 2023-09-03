@@ -152,33 +152,33 @@ public class MyLineChart extends LineChart {
         refreshChart();
     }
 
-    ArrayList<Boolean> shownArray = new ArrayList<>();
-    LineData finalShownData = new LineData();
-    synchronized public void setAllShowArray(ArrayList<Boolean> ShownArray) {
-        shownArray = ShownArray;
+    ArrayList<Boolean> showArray = new ArrayList<>();
+    LineData finalShowData = new LineData();
+    synchronized public void setAllShowArray(ArrayList<Boolean> showArray) {
+        this.showArray = showArray;
         setAllShowArray();
     }
     synchronized public void setAllShowArray() {
-        while (shownArray.size() < groupList.size()) {
-            shownArray.add(true);
+        while (showArray.size() < groupList.size()) {
+            showArray.add(true);
         }
-        finalShownData = new LineData();
+        finalShowData = new LineData();
 
         // Log.e("booleans.size(): " + String.valueOf(booleans.size()));
         // Log.e("entryList.size(): " + String.valueOf(entryList.size()));
         for (int i=0, j=0; i<entryList.size();) {
             if(j < groupList.size() - 1) {
                 while (i < groupList.get(j + 1)) {
-                    if(shownArray.get(j).booleanValue()) {
-                        finalShownData.addDataSet(((LineDataSet) splitData.getDataSets().get(i)));
+                    if(showArray.get(j).booleanValue()) {
+                        finalShowData.addDataSet(((LineDataSet) splitData.getDataSets().get(i)));
                     }
                     // Log.e("i: b: " + String.valueOf(i) + ": " + String.valueOf(booleans.get(j).booleanValue()));
                     i++;
                 }
             } else {
                 while (i < entryList.size()) {
-                    if(shownArray.get(j).booleanValue()) {
-                        finalShownData.addDataSet(((LineDataSet) splitData.getDataSets().get(i)));
+                    if(showArray.get(j).booleanValue()) {
+                        finalShowData.addDataSet(((LineDataSet) splitData.getDataSets().get(i)));
                     }
                     // Log.e("i: b: " + String.valueOf(i) + ": " + String.valueOf(booleans.get(j).booleanValue()));
                     i++;
@@ -191,7 +191,7 @@ public class MyLineChart extends LineChart {
     }
 
     synchronized public void refreshChart() {
-        setData(finalShownData);
+        setData(finalShowData);
 
         // ==================================================================================
         // Set Label
@@ -200,7 +200,7 @@ public class MyLineChart extends LineChart {
             if(dataIndex < (groupList.size()-1) && i == groupList.get(dataIndex+1)) {
                 dataIndex++;
             }
-            if(shownArray.get(dataIndex).booleanValue()) {
+            if(showArray.get(dataIndex).booleanValue()) {
                 if(i != groupList.get(dataIndex)) {
                     getLegend().getEntries()[i-j].label = null;
                     getLegend().getEntries()[i-j].form = Legend.LegendForm.NONE;
@@ -221,12 +221,12 @@ public class MyLineChart extends LineChart {
     public void highlightValue(float x, float y, int dataSetIndex, boolean callListener) {
         Float absDiffX = null;
         int index = 0;
-        for(int i=0; i<finalShownData.getDataSets().size();i++) {
-            for (int j=0; j<finalShownData.getDataSets().get(i).getEntryCount(); j++) {
+        for(int i = 0; i< finalShowData.getDataSets().size(); i++) {
+            for (int j = 0; j< finalShowData.getDataSets().get(i).getEntryCount(); j++) {
                 if(absDiffX == null) {
-                    absDiffX = Math.abs(x - finalShownData.getDataSets().get(i).getEntryForIndex(j).getX());
-                } else if (absDiffX > Math.abs(x - finalShownData.getDataSets().get(i).getEntryForIndex(j).getX())) {
-                    absDiffX = Math.abs(x - finalShownData.getDataSets().get(i).getEntryForIndex(j).getX());
+                    absDiffX = Math.abs(x - finalShowData.getDataSets().get(i).getEntryForIndex(j).getX());
+                } else if (absDiffX > Math.abs(x - finalShowData.getDataSets().get(i).getEntryForIndex(j).getX())) {
+                    absDiffX = Math.abs(x - finalShowData.getDataSets().get(i).getEntryForIndex(j).getX());
                     index = i;
                 }
             }

@@ -77,4 +77,8 @@ public class DataManager {
         mBLEServer.SendToAllCharacteristic(command);
     }
 
+    public void CreateNullBLEData() {
+        mBLEServer.CreateNullBLEData();
+    }
+
 }

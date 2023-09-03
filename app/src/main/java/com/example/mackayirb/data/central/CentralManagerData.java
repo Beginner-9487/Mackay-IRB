@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import javax.inject.Singleton;
 
 @Singleton
-public abstract class CentralDataManager<Manager, Device, Label> {
+public abstract class CentralManagerData<Manager extends CentralManagerData, Device extends CentralDeviceData, Label extends CentralLabelData> {
 
     public ArrayList<Device> deviceData = new ArrayList<>();
 
-    public CentralDataManager() {}
+    public CentralManagerData() {}
 
     public void setup(DataManager dataManager) {
         if(this.dataManager == null) {
@@ -93,11 +93,11 @@ public abstract class CentralDataManager<Manager, Device, Label> {
 
     public abstract Label findLabelDataByBleAndObject(BLEDataServer.BLEData bleData, byte type, Object object);
 
-    public Label findDeviceDataByLabelData(Label centralLabelData) {
+    public Device findDeviceDataByLabelData(Label centralLabelData) {
         for (Device d:deviceData) {
             for (Label data:((CentralDeviceData<Manager, Label>) d).labelData) {
                 if(data.equals(centralLabelData)) {
-                    return (Label) d;
+                    return d;
                 }
             }
         }
@@ -110,5 +110,7 @@ public abstract class CentralDataManager<Manager, Device, Label> {
     public ArrayList<Device> getDeviceData() {
         return deviceData;
     }
+
+    public abstract boolean createManagerDataFile();
 
 }

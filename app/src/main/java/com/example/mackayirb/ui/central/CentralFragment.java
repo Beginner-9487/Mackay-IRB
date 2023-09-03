@@ -18,7 +18,7 @@ import com.example.mackayirb.utils.Log;
 
 import javax.inject.Inject;
 
-public class CentralFragment extends BaseFragment implements CentralMvpView {
+public abstract class CentralFragment extends BaseFragment implements CentralMvpView {
 
     @Inject
     CentralPresenter mCentralPresenter;
@@ -71,8 +71,12 @@ public class CentralFragment extends BaseFragment implements CentralMvpView {
         mCentralPresenter.detachView();
     }
 
+    private long doSomethingFrequency = 100;
+    public void setDoSomethingFrequency(long f) {
+        doSomethingFrequency = f;
+    }
     public long getDoSomethingFrequency() {
-        return 100;
+        return doSomethingFrequency;
     }
     private Handler mHandler;
     private void setUpHandler() {
@@ -102,10 +106,8 @@ public class CentralFragment extends BaseFragment implements CentralMvpView {
     }
     public void doSomethingFrequently() {}
 
-    public int getLayoutId() {
-//        return 0;
-        return R.layout.fragment_foot_chart;
-    }
+    public abstract int getLayoutId();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

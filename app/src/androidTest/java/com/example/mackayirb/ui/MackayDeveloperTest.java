@@ -14,6 +14,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
 
 import com.example.mackayirb.R;
+import com.example.mackayirb.data.central.FakeBytesGiver;
 import com.example.mackayirb.utils.BasicResourceManager;
 
 import org.junit.Test;
@@ -78,6 +79,7 @@ public class MackayDeveloperTest extends MackayTest {
                 .perform(swipeLeft());
 
         for(int i=0; i<numberOfData; i++) {
+            FakeBytesGiver.currentType = FakeBytesGiver.getNewType();
             createNewData();
         }
 

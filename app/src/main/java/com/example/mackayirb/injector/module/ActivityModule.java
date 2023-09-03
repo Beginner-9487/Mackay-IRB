@@ -3,8 +3,8 @@ package com.example.mackayirb.injector.module;
 import android.app.Activity;
 
 import com.example.mackayirb.data.ble.DataManager;
-import com.example.mackayirb.data.central.FootDataManager;
-import com.example.mackayirb.data.central.MackayDataManager;
+import com.example.mackayirb.data.central.FootManagerData;
+import com.example.mackayirb.data.central.MackayManagerData;
 import com.example.mackayirb.ui.central.CentralPresenter;
 import com.example.mackayirb.ui.main.MainPresenter;
 
@@ -29,7 +29,7 @@ public class ActivityModule {
     }
 
     @Provides
-    public CentralPresenter provideCentralPresenter(DataManager dataManager, MackayDataManager mackayDataManager, FootDataManager footDataManager) {
+    public CentralPresenter provideCentralPresenter(DataManager dataManager, MackayManagerData mackayDataManager, FootManagerData footDataManager) {
         return new CentralPresenter(dataManager, mackayDataManager, footDataManager);
     }
 }

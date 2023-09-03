@@ -50,12 +50,18 @@ public class SampleGattAttributes {
         attributes.put("0000fff5-0000-1000-8000-00805f9b34fb", "C5");
         attributes.put("0000fff6-0000-1000-8000-00805f9b34fb", "C6");
 
+        attributes.put("6E400000-B5A3-F393-E0A9-E50E24DCCA9E", "Service: R1-R6");
+        attributes.put("6E400002-B5A3-F393-E0A9-E50E24DCCA9E", "R2");
+        attributes.put("6E400003-B5A3-F393-E0A9-E50E24DCCA9E", "R3");
+
         // ================================================================================
         // subscribed
-        input_UUIDs = getUUIDsByReference(new String[]{"C3"});
-        subscribed_UUIDs = getUUIDsByReference(new String[]{"C6"});
-//        input_UUIDs = getUUIDsByReference(new String[]{"C1","C3"});
-//        subscribed_UUIDs = getUUIDsByReference(new String[]{"C4","C6"});
+//        input_UUIDs = getUUIDsByReference(new String[]{"C3"});
+//        subscribed_UUIDs = getUUIDsByReference(new String[]{"C6"});
+
+        input_UUIDs = getUUIDsByReference(new String[]{"R2"});
+        subscribed_UUIDs = getUUIDsByReference(new String[]{"R3"});
+
 //        input_UUIDs = getUUIDsByReference(new String[]{"C1","C2","C3","C4","C5","C6"});
 //        subscribed_UUIDs = getUUIDsByReference(new String[]{"C1","C2","C3","C4","C5","C6"});
 
@@ -94,7 +100,7 @@ public class SampleGattAttributes {
                 list = new ArrayList<>();
         }
         for (String u:list) {
-            if(u.equals(UUID)) {
+            if(u.equalsIgnoreCase(UUID)) {
                 return true;
             }
         }

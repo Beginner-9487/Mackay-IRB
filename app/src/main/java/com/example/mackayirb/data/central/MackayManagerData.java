@@ -1,8 +1,8 @@
 package com.example.mackayirb.data.central;
 
-import com.example.mackayirb.SampleGattAttributes;
 import com.example.mackayirb.data.ble.BLEDataServer;
 import com.example.mackayirb.utils.BasicResourceManager;
+import com.example.mackayirb.utils.Log;
 import com.example.mackayirb.utils.MyNamingStrategy;
 
 import java.util.ArrayList;
@@ -12,22 +12,21 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class MackayDataManager extends CentralDataManager<MackayDataManager, MackayDeviceData, MackayLabelData> {
+public class MackayManagerData extends CentralManagerData<MackayManagerData, MackayDeviceData, MackayLabelData> {
 
     @Inject
-    public MackayDataManager() {
+    public MackayManagerData() {
         super();
-        deviceData = new ArrayList<MackayDeviceData>();
-//        Log.d("Create");
     }
 
     public static final byte LabelName = 0x00;
     @Override
     public void updateLabelData(BLEDataServer.BLEData bleData) {
         try {
-            if(bleData.DataBuffer.getData() != null) {
+            while(bleData.DataBuffer.getData() != null) {
 //                Log.d("updateLabelData");
-                findLabelDataByBleAndObject(bleData, LabelName, findDeviceDataByBle(bleData).getLabelIndicator()).addNewData(bleData.DataBuffer.popData());
+                String nextLabelDataName = (String) findDeviceDataByBle(bleData).getInitObjectPreparedForNextLabelData();
+                findLabelDataByBleAndObject(bleData, LabelName, nextLabelDataName).addNewData(bleData.DataBuffer.popData());
             }
         } catch (Exception e) {}
     }
@@ -63,7 +62,7 @@ public class MackayDataManager extends CentralDataManager<MackayDataManager, Mac
     }
 
     @Override
-    public MackayDeviceData createDeviceData(BLEDataServer.BLEData bleData, MackayDataManager manager) {
+    public MackayDeviceData createDeviceData(BLEDataServer.BLEData bleData, MackayManagerData manager) {
         if (
             BasicResourceManager.isTesting == true ||
             bleData.DataBuffer.getData() != null
@@ -86,27 +85,24 @@ public class MackayDataManager extends CentralDataManager<MackayDataManager, Mac
         return null;
     }
 
+    @Override
+    public boolean createManagerDataFile() {
+        Log.d("false");
+        return false;
+    }
+
     // =====================================================================================
     // =====================================================================================
 
     public byte defaultMyNamingStrategyMode = MyNamingStrategy.MODE_NULL;
     public String defaultMyNamingStrategyName = "";
 
-    public void removeLabelDataByBLE(BLEDataServer.BLEData bleData, String labelName) {
-        findDeviceDataByBle(bleData).removeLabelByObject(MackayDeviceData.LABEL_NAME, labelName);
-    }
-
     public void SetAllNamingStrategy(byte Mode, String Name) {
         defaultMyNamingStrategyMode = Mode;
         defaultMyNamingStrategyName = Name;
-//        Log.d("Size: " + String.valueOf(deviceData.size()) + "; Mode: " + String.valueOf(Mode) + "; Name: " + Name);
         for(MackayDeviceData d: deviceData) {
             d.labelNamingStrategy.setModeAndName(Mode, Name);
         }
-    }
-
-    public String[] getDataTypes() {
-        return MackayLabelData.getDataTypes();
     }
 
     // =====================================================================================
@@ -121,47 +117,27 @@ public class MackayDataManager extends CentralDataManager<MackayDataManager, Mac
         }
         return arrayList;
     }
-    public ArrayList<Boolean> getAllShowArray() {
-        ArrayList<Boolean> arrayList = new ArrayList<>();
-        for (CentralDeviceData d:deviceData) {
-            for (boolean b:((MackayDeviceData) d).getShowArray()) {
-                arrayList.add(b);
-            }
-        }
-        return arrayList;
-    }
-    public void setAllShowArray(ArrayList<Boolean> booleans) {
-        int index = 0;
+
+    public ArrayList<MackayLabelData> getAllLabelData() {
+        ArrayList<MackayLabelData> mackayLabelDataArrayList = new ArrayList<>();
         for (MackayDeviceData d:deviceData) {
             for(MackayLabelData l: d.labelData) {
-                try {
-                    l.show = booleans.get(index);
-                } catch (Exception e) {}
-                index++;
+                mackayLabelDataArrayList.add(l);
             }
         }
-    }
-    public void setTypeShowArray(ArrayList<Boolean> booleans) {
-        for (MackayDeviceData d:deviceData) {
-            for(MackayLabelData l: d.labelData) {
-                if(booleans.get(l.type)) {
-                    l.show = true;
-                }
-                else {
-                    l.show = false;
-                }
-            }
-        }
+        return mackayLabelDataArrayList;
     }
     public void deleteSelectedData(ArrayList<Boolean> booleans) {
         int index = 0;
         try {
             for (MackayDeviceData d:deviceData) {
-//                Log.d(String.valueOf(d.labelData.size()));
-                for(MackayLabelData l: d.labelData) {
+                for(int i=0; i<d.labelData.size(); i++) {
                     if(booleans.get(index)) {
-                        d.labelData.remove(l);
+                        d.labelData.remove(i);
+                        i--;
+//                        Log.i(String.valueOf(d.labelData.size()));
                     }
+//                    Log.i(String.valueOf(index) + ", " + String.valueOf(booleans.get(index)));
                     index++;
                 }
             }
@@ -171,22 +147,16 @@ public class MackayDataManager extends CentralDataManager<MackayDataManager, Mac
         try {
             for (MackayDeviceData d:deviceData) {
 //                Log.d(String.valueOf(d.labelData.size()));
-                for(MackayLabelData l: d.labelData) {
-                    if(booleans.get(l.type)) {
-                        d.labelData.remove(l);
+                for(int i=0; i<d.labelData.size(); i++) {
+                    if(booleans.get(d.labelData.get(i).type)) {
+                        d.labelData.remove(d.labelData.get(i));
+                        i--;
+//                        Log.i(String.valueOf(d.labelData.size()));
                     }
+//                    Log.i(String.valueOf(d.labelData.get(i).type) + ", " + String.valueOf(booleans.get(d.labelData.get(i).type)));
                 }
             }
         } catch (Exception e) {}
-    }
-    public ArrayList<MackayLabelData> getAllLabelData() {
-        ArrayList<MackayLabelData> mackayLabelDataArrayList = new ArrayList<>();
-        for (MackayDeviceData d:deviceData) {
-            for(MackayLabelData l: d.labelData) {
-                mackayLabelDataArrayList.add(l);
-            }
-        }
-        return mackayLabelDataArrayList;
     }
     public HashMap<Integer, MackayLabelData> getLatestLabelData() {
         HashMap<Integer, MackayLabelData> labelData = new HashMap<>();

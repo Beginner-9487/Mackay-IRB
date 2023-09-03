@@ -47,4 +47,8 @@ public class CircularBuffer {
         isFull = false;
         return data;
     }
+
+    public synchronized int getHead() {
+        return head;
+    }
 }

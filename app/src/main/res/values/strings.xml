@@ -50,7 +50,7 @@
     <string name="ModeSwitchTogglingAlert">Caution: Toggling settings will RESTART the app!!!</string>
 
     <!--  ======================================================================  -->
-    <!--  Central_Chart  -->
+    <!--  Central_Mackay  -->
     <string name="AboutDataMonitorManager">Data Monitor Manager</string>
     <string-array name="AboutDataMonitorSelector">
         <item>Show Data</item>
@@ -119,6 +119,22 @@
 <!--        <item>nmol/L</item>-->
 <!--        <item>mmol/L</item>-->
     </string-array>
+    <!--  ======================================================================  -->
+    <!--  Central_Foot  -->
+    <string-array name="FootViceDataLabels">
+        <item>AccX</item>
+        <item>AccY</item>
+        <item>AccZ</item>
+        <item>GyroX</item>
+        <item>GyroY</item>
+        <item>GyroZ</item>
+        <item>MagX</item>
+        <item>MagY</item>
+        <item>MagZ</item>
+        <item>Pitch</item>
+        <item>Roll</item>
+        <item>Yaw</item>
+    </string-array>
 
     <!--  ======================================================================  -->
     <!--  Central_Selection_Device  -->
@@ -167,7 +183,8 @@
     <string-array name="ViewPagerTitlesFootDeveloper">
         <item>Scanned Devices</item>
         <item>Temp2 UI</item>
-        <item>Foot</item>
+        <item>Foot Map</item>
+        <item>Foot IMU</item>
     </string-array>
 
     <!--  ======================================================================  -->
@@ -178,7 +195,8 @@
     <string name="Temp_DataName_Hint">Please enter to name this data and file.</string>
     <string name="Temp_UI_C6">C6 Receive</string>
     <string name="Temp_FileIndexLimit_Hint">Please enter to limit the maximum index of saved files.</string>
-    <string name="Temp_UI_save">Save Excel</string>
+    <string name="Temp_UI_clear_raw_data">Clear Raw Data</string>
+    <string name="Temp_UI_save_excel_file">Save Excel</string>
     <string name="Temp_UI_save_toast">Saving the Excel file succeeded.</string>
 
     <!-- Senior -->
@@ -203,5 +221,12 @@
     <string name="DeleteSelectedDevices">Delete Selected Devices</string>
 
     <string name="Temp_DataName_Hint_Client">Please enter patient name</string>
+
+    <!--  ======================================================================  -->
+    <!--  Foot  -->
+    <string-array name="Foot">
+        <item>Left Foot</item>
+        <item>Right Foot</item>
+    </string-array>
 
 </resources>

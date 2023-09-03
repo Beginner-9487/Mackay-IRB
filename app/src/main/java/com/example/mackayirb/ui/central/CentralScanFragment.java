@@ -5,13 +5,13 @@ import com.example.mackayirb.adapter.LeDeviceAdapter;
 import com.example.mackayirb.data.ble.BLEDataServer;
 import com.example.mackayirb.ui.base.BasePresenter;
 import com.example.mackayirb.utils.BasicResourceManager;
+import com.example.mackayirb.utils.Log;
 
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +39,7 @@ public abstract class CentralScanFragment extends CentralFragment implements Cen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        setUpScanner();
+        setupScanner();
 
         mRecyclerView = view.findViewById(R.id.recycler);
 
@@ -114,6 +114,7 @@ public abstract class CentralScanFragment extends CentralFragment implements Cen
         // maybe running in UI thread
         mLeDeviceAdapter.addDevice(bt);
         mLeDeviceAdapter.notifyDataSetChanged();
+//        Log.d(bt.getAddress());
     }
 
     @Override
@@ -122,6 +123,7 @@ public abstract class CentralScanFragment extends CentralFragment implements Cen
             // Log.e(data.device.getName());
             mLeDeviceAdapter.showBLEData(data);
             mLeDeviceAdapter.notifyDataSetChanged();
+//            Log.d(data.device.getAddress());
         } catch (Exception e) {}
     }
 
@@ -146,7 +148,7 @@ public abstract class CentralScanFragment extends CentralFragment implements Cen
 
     private final int BLE_SCAN_PERIOD = 10000;
     private Handler mScanner;
-    private void setUpScanner() {
+    private void setupScanner() {
         if(Looper.myLooper() != null) {
             mScanner = new Handler(Looper.myLooper()) {
                 @Override
@@ -188,7 +190,7 @@ public abstract class CentralScanFragment extends CentralFragment implements Cen
             mCentralPresenter.scanBLEPeripheral(enable);
             mRefreshLayout.setRefreshing(enable);
         } catch (BasePresenter.MvpViewNotAttachedException e) {
-            Log.e(CentralScanClientFragment.class.getName(), e.toString());
+            Log.e(e.toString());
             return;
         }
     }

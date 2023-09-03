@@ -264,10 +264,12 @@ public class BLEDataServer extends Service {
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicRead(gatt, characteristic, status);
+//            Log.d(gatt.getDevice().getAddress() + ":" + String.valueOf(characteristic.getValue().length));
 //            Log.d(String.valueOf(characteristic.getValue().length));
             if (status == BluetoothGatt.GATT_SUCCESS) {
 //                Toast.makeText(mContext, "onCharacteristicRead: " + characteristic.getUuid().toString(), Toast.LENGTH_SHORT).show();
                 whenFetchingData(gatt, characteristic);
+//                Log.d(gatt.getDevice().getAddress() + ":" + String.valueOf(findBLEData(gatt).DataBuffer.getHead()));
             }
         }
 
@@ -279,9 +281,11 @@ public class BLEDataServer extends Service {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
+//            Log.d(gatt.getDevice().getAddress() + ":" + String.valueOf(characteristic.getValue().length));
 //            Log.d(String.valueOf(characteristic.getValue().length));
 //            Toast.makeText(mContext, "onCharacteristicChanged: " + characteristic.getUuid().toString(), Toast.LENGTH_SHORT).show();
             whenFetchingData(gatt, characteristic);
+//            Log.d(gatt.getDevice().getAddress() + ":" + String.valueOf(findBLEData(gatt).DataBuffer.getHead()));
         }
 
         @Override
@@ -352,12 +356,14 @@ public class BLEDataServer extends Service {
                     e.onNext(findBLEData(gatt));
                 }
 
-                for (Map.Entry<ObservableEmitter<BLEData>, BluetoothGatt> entry : mGattMap.entrySet()) {
-                    if (entry.getValue().equals(gatt)) {
-                        mGattMap.remove(entry.getKey());
+                try {
+                    for (Map.Entry<ObservableEmitter<BLEData>, BluetoothGatt> entry : mGattMap.entrySet()) {
+                        if (entry.getValue().equals(gatt)) {
+                            mGattMap.remove(entry.getKey());
+                        }
                     }
-                }
-                mGattMap.put(e, gatt);
+                    mGattMap.put(e, gatt);
+                } catch (Exception exception) {}
             }
         });
     }
@@ -536,7 +542,11 @@ public class BLEDataServer extends Service {
     // ================================================================================
     // TODO BLEData
 
-    public static int BLEDataBufferSize = 100;
+    public void CreateNullBLEData() {
+        mBLEData.add(new BLEData(null));
+    }
+
+    public static int BLEDataBufferSize = 3000;
 
     public class BLEData {
         public BluetoothDevice device;

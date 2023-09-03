@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
 
+import com.example.mackayirb.data.central.FootSensorPositions;
 import com.example.mackayirb.utils.BasicResourceManager;
 import com.example.mackayirb.utils.MyCanvas;
 import com.example.mackayirb.utils.OtherUsefulFunction;
@@ -21,7 +22,8 @@ import java.util.List;
 
 public class FootCanvas extends MyCanvas {
 
-    private List<Entry> selectedShapeDataList = new ArrayList<>();
+    private ArrayList<Integer> selectedPositionIndexes = new ArrayList<>();
+    private List<Entry> allPositionEntry = FootSensorPositions.getAllEntry();
     private TouchManager touchManager = new TouchManager();
 
     private boolean isTwoFingerGesture = false;
@@ -50,12 +52,12 @@ public class FootCanvas extends MyCanvas {
     }
     @Override
     public void setShapeDataHash(LinkedHashMap<ShapeData, Paint> shapeDataList) {
-        for (Entry selected:selectedShapeDataList) {
+        for (Integer index: selectedPositionIndexes) {
             shapeDataList.put(
                     new ShapeData(
                             ShapeData.CROSS,
-                            selected.getX(),
-                            selected.getY(),
+                            allPositionEntry.get(index).getX(),
+                            allPositionEntry.get(index).getY(),
                             15.f,
                             1.0f
                     ),
@@ -114,50 +116,50 @@ public class FootCanvas extends MyCanvas {
     }
 
     private void handleShapeDataSelection() {
-        if (getShapeDataSet() == null || getShapeDataSet().size() == 0) {
-            return;
-        }
-        Entry closestShapeData = new Entry(Float.MAX_VALUE, Float.MAX_VALUE);;
+        Entry closestPosition = new Entry(Float.MAX_VALUE, Float.MAX_VALUE);;
         float closestDistance = Float.MAX_VALUE;
+        int closestIndex = 0;
 
         float tx = getImageMatrix().getInvertX(touchManager.getTouch(0).getX(),touchManager.getTouch(0).getY());
         float ty = getImageMatrix().getInvertY(touchManager.getTouch(0).getX(),touchManager.getTouch(0).getY());
-        for (ShapeData shapeData : getShapeDataSet()) {
-            float centerX = shapeData.getX();
-            float centerY = shapeData.getY();
+        for (int index = 0; index < allPositionEntry.size(); index++) {
+            float centerX = allPositionEntry.get(index).getX();
+            float centerY = allPositionEntry.get(index).getY();
 
             float distance = (float) OtherUsefulFunction.calculateDistance(tx, ty, centerX, centerY);
             if (distance < closestDistance) {
-                closestShapeData.setX(shapeData.getX());
-                closestShapeData.setY(shapeData.getY());
+                closestPosition.setX(allPositionEntry.get(index).getX());
+                closestPosition.setY(allPositionEntry.get(index).getY());
                 closestDistance = distance;
+                closestIndex = index;
             }
         }
 
-        if (closestShapeData == null) {
+        if (closestPosition == null) {
             return;
         }
         try {
             boolean lock = true;
-            for (Entry selected:selectedShapeDataList) {
-                if(selected.getX() == closestShapeData.getX() && selected.getY() == closestShapeData.getY()) {
-                    selectedShapeDataList.remove(selected);
+            for (Integer selectedIndex: selectedPositionIndexes) {
+                if(selectedIndex.intValue() == closestIndex) {
+                    selectedPositionIndexes.remove(selectedIndex);
                     lock = false;
+                    break;
                 }
             }
             if(lock) {
-                selectedShapeDataList.add(closestShapeData);
-                setSelectedInformation();
+                selectedPositionIndexes.add(closestIndex);
             }
+            setSelectedInformation();
         } catch (Exception e) {}
     }
     private void setSelectedInformation() {
         LinkedHashMap<String, Paint> hashStoP = new LinkedHashMap<>();
         LinkedHashMap<String, Entry> hashStoE = new LinkedHashMap<>();
-        for (Entry entry:selectedShapeDataList) {
-            String positionInfo = Math.round(entry.getX() * 100f) / 100f + ", " + Math.round(entry.getY() * 100f) / 100f;
+        for (Integer index: selectedPositionIndexes) {
+            String positionInfo = Math.round(allPositionEntry.get(index).getX() * 100f) / 100f + ", " + Math.round(allPositionEntry.get(index).getY() * 100f) / 100f;
             hashStoP.put(positionInfo, paintPositionInfo);
-            hashStoE.put(positionInfo, entry);
+            hashStoE.put(positionInfo, allPositionEntry.get(index));
         }
         setStringToPaint(hashStoP, hashStoE);
     }

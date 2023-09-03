@@ -1,9 +1,5 @@
 package com.example.mackayirb.ui;
 
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
 
 import com.example.mackayirb.utils.BasicResourceManager;

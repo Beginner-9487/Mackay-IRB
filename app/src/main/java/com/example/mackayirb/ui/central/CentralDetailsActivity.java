@@ -136,7 +136,7 @@ public class CentralDetailsActivity extends BaseActivity implements CentralMvpVi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivityComponent().inject(this);
-        setContentView(R.layout.central_gatt_services);
+        setContentView(R.layout.fragment_gatt_services);
 
         mDeviceAddressTv = findViewById(R.id.device_address);
         mGattServicesList = findViewById(R.id.gatt_services_list);

@@ -2,7 +2,7 @@ package com.example.mackayirb.ui.central;
 
 import com.example.mackayirb.R;
 import com.example.mackayirb.data.ble.BLEDataServer;
-import com.example.mackayirb.data.central.MackayDataManager;
+import com.example.mackayirb.data.central.MackayManagerData;
 import com.example.mackayirb.utils.BasicResourceManager;
 import com.example.mackayirb.utils.MyNamingStrategy;
 import com.example.mackayirb.utils.OtherUsefulFunction;
@@ -43,7 +43,7 @@ public class CentralTempUIFragment extends CentralFragment implements CentralMvp
 
     @Override
     public int getLayoutId() {
-        return R.layout.central_temp_ui;
+        return R.layout.fragment_temp_ui;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -106,10 +106,10 @@ public class CentralTempUIFragment extends CentralFragment implements CentralMvp
     public void SetNamingStrategy() {
         switch(radioGroup_senior.getCheckedRadioButtonId()) {
             case R.id.RadioLiZe:
-                ((MackayDataManager) (mCentralPresenter.getCentralDataManager())).SetAllNamingStrategy(MyNamingStrategy.MODE_NORMAL, edit_dataName.getText().toString());
+                ((MackayManagerData) (mCentralPresenter.getCentralDataManager())).SetAllNamingStrategy(MyNamingStrategy.MODE_NORMAL, edit_dataName.getText().toString());
                 break;
             case R.id.RadioXieZhiLong:
-                ((MackayDataManager) (mCentralPresenter.getCentralDataManager())).SetAllNamingStrategy(MyNamingStrategy.MODE_XIE_ZHI_LONG, edit_dataName.getText().toString());
+                ((MackayManagerData) (mCentralPresenter.getCentralDataManager())).SetAllNamingStrategy(MyNamingStrategy.MODE_XIE_ZHI_LONG, edit_dataName.getText().toString());
                 break;
         }
     }

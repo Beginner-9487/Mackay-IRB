@@ -7,8 +7,8 @@ import android.bluetooth.le.BluetoothLeScanner;
 import com.example.mackayirb.data.ble.BLEDataServer;
 import com.example.mackayirb.data.ble.BLEPeripheralServer;
 import com.example.mackayirb.data.ble.DataManager;
-import com.example.mackayirb.data.central.FootDataManager;
-import com.example.mackayirb.data.central.MackayDataManager;
+import com.example.mackayirb.data.central.FootManagerData;
+import com.example.mackayirb.data.central.MackayManagerData;
 import com.example.mackayirb.injector.module.ApplicationModule;
 
 import javax.inject.Singleton;
@@ -33,6 +33,6 @@ public interface ApplicationComponent {
     BLEDataServer bleDataServer();
 
 //    CentralDataManager centralDataManager();
-    MackayDataManager mackayDataManager();
-    FootDataManager footDataManager();
+    MackayManagerData mackayDataManager();
+    FootManagerData footDataManager();
 }

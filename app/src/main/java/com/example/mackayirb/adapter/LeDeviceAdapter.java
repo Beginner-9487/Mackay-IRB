@@ -3,6 +3,7 @@ package com.example.mackayirb.adapter;
 import com.example.mackayirb.R;
 import com.example.mackayirb.data.ble.BLEDataServer;
 import com.example.mackayirb.utils.BasicResourceManager;
+import com.example.mackayirb.utils.Log;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -53,7 +54,7 @@ public class LeDeviceAdapter extends RecyclerView.Adapter<LeDeviceAdapter.Device
     public void onBindViewHolder(final DeviceViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         BluetoothDevice bt = mLeDevices.get(position);
         BLEDataServer.BLEData data = mBLEDataMap.get(bt);
-        // Log.d("LeDeviceAdapter", "position(" + position + "), " + bt.toString());
+//        Log.d("position(" + position + "), " + bt.toString());
 
 //        if (ActivityCompat.checkSelfPermission(BasicResourceManager.getCurrentFragment().getActivity(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
 ////            return;
@@ -61,7 +62,7 @@ public class LeDeviceAdapter extends RecyclerView.Adapter<LeDeviceAdapter.Device
         holder.deviceName.setText(holder.resources.getString(R.string.DeviceName) + ": " + bt.getName());
         holder.deviceAddress.setText(holder.resources.getString(R.string.DeviceAddress) + ": " + bt.getAddress());
 
-        // Log.e("LeDeviceAdapter", bt.getName() + ": connectedState: " + String.valueOf(data.connectedState));
+//        Log.e(bt.getName() + ": connectedState: " + String.valueOf(data.connectedState));
 
         switch (BasicResourceManager.SharedPreferencesManager.getModeController()) {
             case BasicResourceManager.SharedPreferencesManager.MackayClientMode:

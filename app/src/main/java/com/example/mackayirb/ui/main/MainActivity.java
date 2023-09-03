@@ -1,6 +1,5 @@
 package com.example.mackayirb.ui.main;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -16,17 +15,18 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.mackayirb.ui.central.CentralChartForRPNFragment;
-import com.example.mackayirb.ui.central.CentralChartFragment;
-import com.example.mackayirb.ui.central.CentralFootFragment;
+import com.example.mackayirb.ui.base.BaseViewpagerAdapter;
+import com.example.mackayirb.ui.central.CentralFootIMUFragment;
+import com.example.mackayirb.ui.central.CentralMackayForRPNFragment;
+import com.example.mackayirb.ui.central.CentralMackayFragment;
+import com.example.mackayirb.ui.central.CentralFootMapFragment;
 import com.example.mackayirb.ui.central.CentralFragment;
 import com.example.mackayirb.ui.central.CentralPresenter;
 import com.example.mackayirb.ui.central.CentralScanClientFragment;
 import com.example.mackayirb.ui.central.CentralScanDeveloperFragment;
-import com.example.mackayirb.ui.central.CentralTemp2UIFragment;
+import com.example.mackayirb.ui.central.CentralTempUIFragment2;
 import com.example.mackayirb.ui.central.CentralTempUIFragment;
 import com.example.mackayirb.ui.central.CustomViewPager;
 import com.example.mackayirb.utils.BasicResourceManager;
@@ -48,10 +48,6 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     BluetoothAdapter mBluetoothAdapter;
 
     public CustomViewPager mViewPager;
-
-    public CustomViewPager getViewPager() {
-        return mViewPager;
-    }
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
@@ -213,19 +209,20 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         switch (BasicResourceManager.SharedPreferencesManager.getModeController()) {
             case BasicResourceManager.SharedPreferencesManager.MackayClientMode:
                 fragments[0] = new CentralScanClientFragment();
-                fragments[1] = new CentralChartForRPNFragment();
+                fragments[1] = new CentralMackayForRPNFragment();
                 break;
             case BasicResourceManager.SharedPreferencesManager.MackayDeveloperMode:
                 fragments[0] = new CentralScanDeveloperFragment();
                 fragments[1] = new CentralTempUIFragment();
-                fragments[2] = new CentralChartFragment();
-                fragments[3] = new CentralChartForRPNFragment();
+                fragments[2] = new CentralMackayFragment();
+                fragments[3] = new CentralMackayForRPNFragment();
                 fragments[4] = new Fragment();
                 break;
             case BasicResourceManager.SharedPreferencesManager.FootDeveloperMode:
                 fragments[0] = new CentralScanDeveloperFragment();
-                fragments[1] = new CentralTemp2UIFragment();
-                fragments[2] = new CentralFootFragment();
+                fragments[1] = new CentralTempUIFragment2();
+                fragments[2] = new CentralFootMapFragment();
+                fragments[3] = new CentralFootIMUFragment();
                 break;
         }
 
@@ -257,8 +254,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         try {
-                                            BasicResourceManager.SharedPreferencesManager.setModeController(Integer.parseInt(editText.getText().toString()));
-                                            restartApp();
+                                            DeveloperModeHandler(Integer.parseInt(editText.getText().toString()));
                                         } catch (Exception e) {}
                                     }
                                 },
@@ -288,6 +284,18 @@ public class MainActivity extends BaseActivity implements MainMvpView {
                 return false;
             }
         });
+    }
+
+    public void DeveloperModeHandler(int code) {
+        switch (code) {
+            case 99:
+                CentralFragment item = (CentralFragment) (((BaseViewpagerAdapter) mViewPager.getAdapter()).getItem(mViewPager.getCurrentItem()));
+                item.getCentralPresenter().setupWantedGetFakeBytesHandler();
+                break;
+            default:
+                BasicResourceManager.SharedPreferencesManager.setModeController(code);
+                restartApp();
+        }
     }
 
     @Override

@@ -20,12 +20,10 @@ import java.util.Calendar;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class MackayDeviceData extends CentralDeviceData<MackayDataManager, MackayLabelData> {
+public class MackayDeviceData extends CentralDeviceData<MackayManagerData, MackayLabelData> {
 
-    public MackayDeviceData(BLEDataServer.BLEData BleData, MackayDataManager manager) {
+    public MackayDeviceData(BLEDataServer.BLEData BleData, MackayManagerData manager) {
         super(BleData, manager);
-        labelData = new ArrayList<MackayLabelData>();
-//        Log.d(String.valueOf(myManager.defaultMyNamingStrategyMode) + ": " + myManager.defaultMyNamingStrategyName);
         labelNamingStrategy = new MyNamingStrategy(myManager.defaultMyNamingStrategyMode, myManager.defaultMyNamingStrategyName);
     }
 
@@ -54,41 +52,13 @@ public class MackayDeviceData extends CentralDeviceData<MackayDataManager, Macka
         return arrayList;
     }
 
-    public ArrayList<Boolean> getShowArray() {
-        ArrayList<Boolean> arrayList = new ArrayList<>();
-        for (MackayLabelData l : labelData) {
-            arrayList.add(l.show);
-            // Log.e(String.valueOf(l.labelName) + ": " + String.valueOf(l.show));
-        }
-        return arrayList;
-    }
-
-    public void removeLabelDataByLabelName(String labelName) {
-        for (MackayLabelData l : labelData) {
-            if (l.labelName.equals(labelName)) {
-                labelData.remove(l);
-            }
-        }
+    @Override
+    public MackayLabelData createNewLabelData() {
+        return new MackayLabelData(this);
     }
 
     @Override
-    public MackayLabelData findLabel(MackayLabelData item) {
-        int targetIndex = -1;
-        for (int i = 0; i < labelData.size(); i++) {
-            if (labelData.get(i).equals(item)) {
-                targetIndex = i;
-            }
-        }
-//        Log.d(String.valueOf(deviceData.size()));
-        if (targetIndex == -1) {
-            labelData.add((MackayLabelData) new MackayLabelData(this));
-            targetIndex = labelData.size() - 1;
-        }
-        return labelData.get(targetIndex);
-    }
-
-    @Override
-    public Object getLabelIndicator() {
+    public Object getInitObjectPreparedForNextLabelData() {
 //        Log.d(String.valueOf(labelNamingStrategy.getMode()) + ": " + labelNamingStrategy.getName() + ": " + labelNamingStrategy.getCurrentName(bleData));
         return labelNamingStrategy.getCurrentName(bleData);
     }

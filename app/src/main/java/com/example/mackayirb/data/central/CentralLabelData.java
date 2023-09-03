@@ -1,9 +1,6 @@
 package com.example.mackayirb.data.central;
 
-
-import android.content.res.Resources;
-
-public abstract class CentralLabelData<Device> {
+public abstract class CentralLabelData<Manager extends CentralManagerData, Device extends CentralDeviceData> {
 
     Device myDeviceData;
 
@@ -19,4 +16,3 @@ public abstract class CentralLabelData<Device> {
         return myDeviceData;
     }
 }
-

@@ -19,7 +19,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MackayLabelData extends CentralLabelData<MackayDeviceData> {
+public class MackayLabelData extends CentralLabelData<MackayManagerData, MackayDeviceData> {
 
     private static int getDataTypeID() {
         return R.array.TypeLabels;
@@ -36,7 +36,6 @@ public class MackayLabelData extends CentralLabelData<MackayDeviceData> {
     public static final byte YUnit = 0x05;
 
     public String labelName;
-    public boolean show = true;
     public byte levelOfDownload = 0;
     public int type = -1;
     public int numberOfData = 0;
@@ -52,11 +51,10 @@ public class MackayLabelData extends CentralLabelData<MackayDeviceData> {
         );
     }
 
-    public MackayLabelData(MackayDeviceData mackayDeviceData, String LabelName, boolean Show, byte LevelOfDownload) {
+    public MackayLabelData(MackayDeviceData mackayDeviceData, String LabelName, byte LevelOfDownload) {
         super(mackayDeviceData);
         labelName = LabelName;
         data = new HashMap<>();
-        show = Show;
         levelOfDownload = LevelOfDownload;
     }
     public MackayLabelData(MackayDeviceData mackayDeviceData, String LabelName) {
@@ -76,7 +74,7 @@ public class MackayLabelData extends CentralLabelData<MackayDeviceData> {
             return 0x00;
         }
         if (type == -1) {
-            type = OtherUsefulFunction.byteArrayToSignedInt(new byte[]{bytes[0]});
+            type = (int) OtherUsefulFunction.byteArrayToSignedInt(new byte[]{bytes[0]});
             xPrecision = 1000.0f;
             yPrecision = 1000000.0f;
         } else if (type != OtherUsefulFunction.byteArrayToSignedInt(new byte[]{bytes[0]})) {
@@ -85,14 +83,13 @@ public class MackayLabelData extends CentralLabelData<MackayDeviceData> {
         }
 
         if (numberOfData == 0) {
-            numberOfData = OtherUsefulFunction.byteArrayToSignedInt(new byte[]{bytes[1], bytes[2]});
+            numberOfData = (int) OtherUsefulFunction.byteArrayToSignedInt(new byte[]{bytes[1], bytes[2]});
         } else if (numberOfData != OtherUsefulFunction.byteArrayToSignedInt(new byte[]{bytes[1], bytes[2]})) {
             Log.e("It is a different Number of Data!");
             return 0x00;
         }
-//             Log.e("Chart: Size: " + labelName + ": " + String.valueOf(data.values().size()) + ": " + OtherUsefulFunction.byteArrayToHexString(bytes, ", "));
         data.put(
-                OtherUsefulFunction.byteArrayToSignedInt(new byte[]{bytes[3], bytes[4]}),
+                (int) OtherUsefulFunction.byteArrayToSignedInt(new byte[]{bytes[3], bytes[4]}),
                 CreateNewEntryByBytes(
                         new byte[]{bytes[5], bytes[6]},
                         new byte[]{bytes[7], bytes[8]},
@@ -246,7 +243,7 @@ public class MackayLabelData extends CentralLabelData<MackayDeviceData> {
 
     @Override
     public boolean saveNewFile() {
-        // Log.i("saveMyFile: " + labelName);
+//        Log.i("saveMyFile: " + labelName);
         try {
             markAsDownloaded();
 
@@ -286,7 +283,7 @@ public class MackayLabelData extends CentralLabelData<MackayDeviceData> {
 
             // Save as Excel XLSX file
             if (file.exportDataIntoWorkbook()) {
-                // Log.i(BasicResourceManager.getResources().getString(R.string.Temp_UI_save_toast));
+                Log.i(BasicResourceManager.getResources().getString(R.string.Temp_UI_save_toast));
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {

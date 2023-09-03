@@ -35,6 +35,6 @@ public class PermissionsFragment extends Fragment {
         if (messageSentListener != null) {
             messageSentListener.onMessageSent("onCreated");
         }
-        return inflater.inflate(R.layout.empty_fragment, container, false);
+        return inflater.inflate(R.layout.fragment_empty, container, false);
     }
 }

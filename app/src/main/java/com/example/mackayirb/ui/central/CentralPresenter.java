@@ -6,13 +6,18 @@ import android.os.Looper;
 import android.os.Message;
 
 import com.example.mackayirb.data.ble.BLEDataServer;
-import com.example.mackayirb.data.central.CentralDataManager;
+import com.example.mackayirb.data.central.CentralManagerData;
 import com.example.mackayirb.data.ble.DataManager;
-import com.example.mackayirb.data.central.FootDataManager;
-import com.example.mackayirb.data.central.MackayDataManager;
+import com.example.mackayirb.data.central.CentralDeviceData;
+import com.example.mackayirb.data.central.FakeBytesGiver;
+import com.example.mackayirb.data.central.CentralLabelData;
+import com.example.mackayirb.data.central.FootManagerData;
+import com.example.mackayirb.data.central.MackayManagerData;
 import com.example.mackayirb.ui.base.BasePresenter;
+import com.example.mackayirb.utils.BasicResourceManager;
 import com.example.mackayirb.utils.Log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,16 +41,14 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
     }
 
     // =====================================================================================
-    private byte dataManagerType;
-    private MackayDataManager myMackayDataManager;
-    private FootDataManager myFootDataManager;
-    public static final byte MackayDataManager = 0x00;
-    public static final byte FootDataManager = 0x01;
-    public CentralDataManager getCentralDataManager() {
-        switch (dataManagerType) {
-            case MackayDataManager:
+    private MackayManagerData myMackayDataManager;
+    private FootManagerData myFootDataManager;
+    public CentralManagerData getCentralDataManager() {
+        switch (BasicResourceManager.SharedPreferencesManager.getModeController()) {
+            case BasicResourceManager.SharedPreferencesManager.MackayClientMode:
+            case BasicResourceManager.SharedPreferencesManager.MackayDeveloperMode:
                 return myMackayDataManager;
-            case FootDataManager:
+            case BasicResourceManager.SharedPreferencesManager.FootDeveloperMode:
                 return myFootDataManager;
         }
         return null;
@@ -56,17 +59,17 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
     private final HashMap<BluetoothDevice, Disposable> myConnectedDisposable;
 
     @Inject
-    public CentralPresenter(DataManager dataManager, MackayDataManager mackayDataManager, FootDataManager footDataManager) {
+    public CentralPresenter(DataManager dataManager, MackayManagerData mackayDataManager, FootManagerData footDataManager) {
         myDataManager = dataManager;
         myMackayDataManager = mackayDataManager;
         myFootDataManager = footDataManager;
+        getCentralDataManager().setup(myDataManager);
         myConnectedDisposable = new HashMap<>();
     }
 
     @Override
     public void attachView(CentralMvpView centralView) {
         super.attachView(centralView);
-
     }
 
     public void initForBLEData() {
@@ -75,11 +78,6 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
         for(BLEDataServer.BLEData d: data) {
             getMvpView().showBLEData(d);
         }
-    }
-
-    public void initForCentralDataManager(byte type) {
-        dataManagerType = type;
-        getCentralDataManager().setup(myDataManager);
     }
 
     @Override
@@ -242,6 +240,47 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
 
     public BLEDataServer getBLEDataServer() {
         return myDataManager.getBLEServer();
+    }
+
+    public void saveEachLabelExcelFile() {
+        ArrayList<? extends CentralDeviceData> centralDeviceData = getCentralDataManager().deviceData;
+        Log.d(String.valueOf(centralDeviceData.size()));
+        for (int i=0; i<centralDeviceData.size(); i++) {
+            ArrayList<? extends CentralLabelData> centralLabelData = centralDeviceData.get(i).labelData;
+            Log.d(String.valueOf(centralLabelData.size()));
+            for (int j=0; j<centralLabelData.size(); j++) {
+                centralLabelData.get(j).saveNewFile();
+            }
+        }
+    }
+    public void clearRawData() {
+        myFootDataManager.rawData = new ArrayList<>();
+    }
+    public void createManagerDataFile() {
+        getCentralDataManager().createManagerDataFile();
+    }
+
+    private Handler wantedGetFakeBytesHandler;
+    public void setupWantedGetFakeBytesHandler() {
+        getDataManager().CreateNullBLEData();
+        List<BLEDataServer.BLEData> mBLEData = getDataManager().getRemoteBLEData();
+        wantedGetFakeBytesHandler = new Handler(Looper.myLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                try {
+                    for(int i=0; i<mBLEData.size(); i++) {
+                        if(mBLEData.get(i).device == null) {
+                            mBLEData.get(i).DataBuffer.addData(FakeBytesGiver.getBytes());
+                        }
+                    }
+                } catch (Exception e) {}
+                sendMessageDelayed(
+                        obtainMessage(0),
+                        FakeBytesGiver.getFrequency()
+                );
+            }
+        };
+        wantedGetFakeBytesHandler.sendEmptyMessage(0);
     }
 
 }

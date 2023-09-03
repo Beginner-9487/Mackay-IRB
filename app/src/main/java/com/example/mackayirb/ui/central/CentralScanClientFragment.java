@@ -1,7 +1,7 @@
 package com.example.mackayirb.ui.central;
 
 import com.example.mackayirb.R;
-import com.example.mackayirb.data.central.MackayDataManager;
+import com.example.mackayirb.data.central.MackayManagerData;
 import com.example.mackayirb.ui.main.MainActivity;
 import com.example.mackayirb.utils.BasicResourceManager;
 import com.example.mackayirb.utils.Log;
@@ -91,7 +91,7 @@ public class CentralScanClientFragment extends CentralScanDeveloperFragment impl
     }
 
     public void SetNamingStrategy() {
-        ((MackayDataManager) (mCentralPresenter.getCentralDataManager())).SetAllNamingStrategy(MyNamingStrategy.MODE_XIE_ZHI_LONG, editDataName.getText().toString());
+        ((MackayManagerData) (mCentralPresenter.getCentralDataManager())).SetAllNamingStrategy(MyNamingStrategy.MODE_XIE_ZHI_LONG, editDataName.getText().toString());
     }
 
     @Override

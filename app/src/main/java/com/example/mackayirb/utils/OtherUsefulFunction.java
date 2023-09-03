@@ -10,6 +10,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.os.Build;
 import android.widget.EditText;
 
@@ -22,6 +28,7 @@ import androidx.fragment.app.FragmentManager;
 import com.example.mackayirb.fragment.PermissionAgreeFragment;
 import com.github.mikephil.charting.data.Entry;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class OtherUsefulFunction {
@@ -125,21 +132,30 @@ public class OtherUsefulFunction {
     }
 
     /**
-     * Convert Byte Array to Integer
+     * Convert Byte Array to Unsigned Integer
      * <p></p>
      * {@link Character#digit}
      */
-    public static int byteArrayToSignedInt(byte[] bytes) {
+    public static long byteArrayToUnsignedInt(byte[] bytes) {
         long value = 0;
         for (int i = 0; i < bytes.length; i++) {
             value |= (long) (bytes[bytes.length - i - 1] & 0xff) << (8 * i);
         }
+        return value;
+    }
+    /**
+     * Convert Byte Array to Integer
+     * <p></p>
+     * {@link Character#digit}
+     */
+    public static long byteArrayToSignedInt(byte[] bytes) {
+        long value = byteArrayToUnsignedInt(bytes);
         // If the most significant bit of the final byte is set, the value is negative.
         if ((bytes[0] & 0x80) != 0) {
             // Extend the sign bit to fill the entire long value.
             value |= (-1L << (8 * bytes.length));
         }
-        return (int) value;
+        return value;
     }
 
     /**
@@ -231,35 +247,74 @@ public class OtherUsefulFunction {
         return Math.sqrt(dx * dx + dy * dy);
     }
 
-    public static <T> T[] concatWithArrayCopy(T[] array1, T[] array2) {
-        T[] result = Arrays.copyOf(array1, array1.length + array2.length);
-        System.arraycopy(array2, 0, result, array1.length, array2.length);
+    public static <T> T[] concatWithArrayCopy(T[] ...arrays) {
+        T[] result = (T[]) new Object[0];
+        int initLength;
+        for (T[] array:arrays) {
+            initLength = result.length;
+            result = Arrays.copyOf(result, result.length + array.length);
+            System.arraycopy(array, 0, result, initLength, array.length);
+        }
         return result;
     }
-    public static boolean[] concatWithArrayCopy(boolean[] array1, boolean[] array2) {
-        boolean[] result = Arrays.copyOf(array1, array1.length + array2.length);
-        System.arraycopy(array2, 0, result, array1.length, array2.length);
+    public static boolean[] concatWithArrayCopy(boolean[] ...arrays) {
+        boolean[] result = new boolean[0];
+        int initLength;
+        for (boolean[] array:arrays) {
+            initLength = result.length;
+            result = Arrays.copyOf(result, result.length + array.length);
+            System.arraycopy(array, 0, result, initLength, array.length);
+        }
         return result;
     }
-    public static byte[] concatWithArrayCopy(byte[] array1, byte[] array2) {
-        byte[] result = Arrays.copyOf(array1, array1.length + array2.length);
-        System.arraycopy(array2, 0, result, array1.length, array2.length);
+    public static byte[] concatWithArrayCopy(byte[] ...arrays) {
+        byte[] result = new byte[0];
+        int initLength;
+        for (byte[] array:arrays) {
+            initLength = result.length;
+            result = Arrays.copyOf(result, result.length + array.length);
+            System.arraycopy(array, 0, result, initLength, array.length);
+        }
         return result;
     }
-    public static int[] concatWithArrayCopy(int[] array1, int[] array2) {
-        int[] result = Arrays.copyOf(array1, array1.length + array2.length);
-        System.arraycopy(array2, 0, result, array1.length, array2.length);
+    public static int[] concatWithArrayCopy(int[] ...arrays) {
+        int[] result = new int[0];
+        int initLength;
+        for (int[] array:arrays) {
+            initLength = result.length;
+            result = Arrays.copyOf(result, result.length + array.length);
+            System.arraycopy(array, 0, result, initLength, array.length);
+        }
         return result;
     }
-    public static float[] concatWithArrayCopy(float[] array1, float[] array2) {
-        float[] result = Arrays.copyOf(array1, array1.length + array2.length);
-        System.arraycopy(array2, 0, result, array1.length, array2.length);
+    public static float[] concatWithArrayCopy(float[] ...arrays) {
+        float[] result = new float[0];
+        int initLength;
+        for (float[] array:arrays) {
+            initLength = result.length;
+            result = Arrays.copyOf(result, result.length + array.length);
+            System.arraycopy(array, 0, result, initLength, array.length);
+        }
         return result;
     }
-    public static double[] concatWithArrayCopy(double[] array1, double[] array2) {
-        double[] result = Arrays.copyOf(array1, array1.length + array2.length);
-        System.arraycopy(array2, 0, result, array1.length, array2.length);
+    public static double[] concatWithArrayCopy(double[] ...arrays) {
+        double[] result = new double[0];
+        int initLength;
+        for (double[] array:arrays) {
+            initLength = result.length;
+            result = Arrays.copyOf(result, result.length + array.length);
+            System.arraycopy(array, 0, result, initLength, array.length);
+        }
         return result;
+    }
+
+    public static boolean contains(byte[] array, byte value) {
+        for (byte elem:array) {
+            if(elem == value) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static float getMinOf(float[] array) {
@@ -316,6 +371,16 @@ public class OtherUsefulFunction {
         };
     }
 
+    public static byte[] reverseArray(byte[] array) {
+        for(int i = 0; i < array.length / 2; i++) {
+            // Swapping the elements
+            byte j = array[i];
+            array[i] = array[array.length - i - 1];
+            array[array.length - i - 1] = j;
+        }
+        return array;
+    }
+
     public static class ByteIterator {
         int pos = 0;
         byte[] data;
@@ -328,13 +393,65 @@ public class OtherUsefulFunction {
         public int index() {
             return pos;
         }
-        public byte[] array(int length) {
+        public byte[] array(boolean reverse, int length) {
             byte[] values = new byte[length];
             for (int i=0; i<length; i++) {
                 values[i] = next();
             }
-            return values;
+            return (reverse) ? reverseArray(values) : values;
         }
+    }
+
+    public static byte getRandomByte() {
+        return (byte) ((Math.random() - 0.5f) * 254f);
+    }
+    public static byte[] getRandomByteArray(int length) {
+        byte[] array = new byte[length];
+        for (int i=0; i<length; i++) {
+            array[i] = getRandomByte();
+        }
+        return array;
+    }
+    public static byte[] getSignedIntToByteArray(boolean reverse, int integer, int capacity) {
+        byte[] array = new byte[capacity];
+        int index = 0;
+        byte[] buffer = ByteBuffer.allocate(4).putInt(integer).array();
+        buffer = (reverse) ? reverseArray(buffer) : buffer;
+        for (byte b:buffer) {
+            if(reverse) {
+                if(index < capacity) {
+                    array[index] = b;
+                }
+            } else {
+                if((index + capacity) >= 4) {
+                    array[((index + capacity) - 4)] = b;
+                }
+            }
+            index++;
+        }
+        return array;
+    }
+    public static byte[] getSignedIntToByteArray(boolean reverse, int integer, int capacity, int length) {
+        byte[] array = new byte[length*capacity];
+        for (int i=0; i<length; i++) {
+            int index = 0;
+            for (byte b:getSignedIntToByteArray(reverse, integer, capacity)) {
+                array[(i*capacity) + index] = b;
+                index++;
+            }
+        }
+        return array;
+    }
+    public static byte[] getSignedIntSequenceToByteArray(boolean reverse, int min, int step, int capacity, int length) {
+        byte[] array = new byte[length*capacity];
+        for (int i=0; i<length; i++) {
+            int index = 0;
+            for (byte b:getSignedIntToByteArray(reverse, min + (step * i), capacity)) {
+                array[(i*capacity) + index] = b;
+                index++;
+            }
+        }
+        return array;
     }
 
 }

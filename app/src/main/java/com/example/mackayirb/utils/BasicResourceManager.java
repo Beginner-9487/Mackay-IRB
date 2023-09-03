@@ -6,7 +6,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.os.Build;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;

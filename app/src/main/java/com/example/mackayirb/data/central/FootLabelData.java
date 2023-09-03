@@ -1,109 +1,184 @@
 package com.example.mackayirb.data.central;
 
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+
 import com.example.mackayirb.R;
 import com.example.mackayirb.utils.BasicResourceManager;
+import com.example.mackayirb.utils.Log;
+import com.example.mackayirb.utils.MyExcelFile;
 import com.example.mackayirb.utils.OtherUsefulFunction;
 import com.github.mikephil.charting.data.Entry;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Calendar;
 
-public class FootLabelData extends CentralLabelData<FootDeviceData> {
-
-    private static int getDataTypeID() {
-        return R.array.TypeLabels;
-    }
-    public static String[] getDataTypes() {
-        return BasicResourceManager.getResources().getStringArray(getDataTypeID());
-    }
+public class FootLabelData extends CentralLabelData<FootManagerData, FootDeviceData> {
 
     public String labelName;
-    public boolean show = true;
     public byte levelOfDownload = 0;
-    public int type = -1;
 
     public static class Position {
         public static final byte LEFT_FOOT = 0x0a;
         public static final byte RIGHT_FOOT = 0x0b;
+        public static final byte[] ALL_POSITION = new byte[]{LEFT_FOOT, RIGHT_FOOT};
     }
     public static class MainFloatList {
-        public static final byte ShearForce = 0;
-        public static final byte Pressures = 1;
-        public static final byte Temperatures = 2;
-        public static final byte Average = 3;
+        public static final byte ShearForceX = 0;
+        public static final byte ShearForceY = 1;
+        public static final byte Pressures = 2;
+        public static final byte Temperatures = 3;
+
+        public static final byte MAIN_LENGTH = Temperatures + 1;
+        public static final byte defaultNumberOfByte = 2;
+        public static final byte[] Once = new byte[]{Temperatures};
     }
     public static class ViceFloat {
         public static final byte AccX = 0;
         public static final byte AccY = 1;
         public static final byte AccZ = 2;
-        public static final byte ClockTime = 3;
-        public static final byte COP_X = 4;
-        public static final byte COP_Y = 5;
-        public static final byte Roll_H = 6;
-        public static final byte Roll_L = 7;
-        public static final byte Pitch_H = 8;
-        public static final byte Pitch_L = 9;
-        public static final byte Yaw_H = 10;
-        public static final byte Yaw_L = 11;
-        public static final byte GyroX_H = 12;
-        public static final byte GyroX_L = 13;
-        public static final byte GyroY_H = 14;
-        public static final byte GyroY_L = 15;
-        public static final byte GyroZ_H = 16;
-        public static final byte GyroZ_L = 17;
+        public static final byte GyroX = 3;
+        public static final byte GyroY = 4;
+        public static final byte GyroZ = 5;
+        public static final byte MagX = 6;
+        public static final byte MagY = 7;
+        public static final byte MagZ = 8;
+        public static final byte Pitch = 9;
+        public static final byte Roll = 10;
+        public static final byte Yaw = 11;
 
-        public static final byte[] Triple = new byte[]{ClockTime};
+        public static final byte VICE_LENGTH = Yaw + 1;
+        public static final byte defaultNumberOfByte = 2;
+        public static final byte[] Triple = new byte[]{};
     }
     private ArrayList<Foot> feet = new ArrayList<>();
     public class Foot {
         public byte position;
+
         public ArrayList<float[]> mainFloatList = new ArrayList<>();
-        public Entry[] mainCenterEntry = new Entry[MainFloatList.Average];
-        public float[] viceFloat = new float[ViceFloat.GyroZ_L];
+        public Entry[] mainCenter = new Entry[MainFloatList.MAIN_LENGTH];
+        public float[] mainAverage = new float[MainFloatList.MAIN_LENGTH];
+        public ArrayList<float[]> mainDirection = new ArrayList<>();
+
+        public float[] viceFloat = new float[ViceFloat.VICE_LENGTH];
+
         public Foot(byte[] bytes) {
 
             OtherUsefulFunction.ByteIterator data = new OtherUsefulFunction.ByteIterator(bytes);
 
             position = data.next();
 
-            for(int m = 0; m< MainFloatList.Average; m++) {
-                mainFloatList.add(new float[getNumberOfSensor()]);
+            // viceFloat
+            for (byte i=0; i<ViceFloat.VICE_LENGTH; i++) {
+                byte numberOfByte = ViceFloat.defaultNumberOfByte;
+                if(OtherUsefulFunction.contains(ViceFloat.Triple, i)) { numberOfByte = (byte) 3; }
+                viceFloat[i] = (float) OtherUsefulFunction.byteArrayToSignedInt(
+                        data.array(true, numberOfByte)
+                );
+                // Log.d("Vice:" + String.valueOf(i) + ":" + String.valueOf(data.index()));
             }
-            mainFloatList.add(new float[MainFloatList.Average]);
 
             // mainFloatList, mainEntry
-            for(int m = 0; m< MainFloatList.Average; m++) {
-                mainCenterEntry[m] = new Entry(0f, 0f);
-                for (int i=0; i<getNumberOfSensor(); i++) {
-                    mainFloatList.get(m)[i] = (float) OtherUsefulFunction.byteArrayToSignedInt(
-                            data.array(2)
-                    );
-                    mainFloatList.get(MainFloatList.Average)[m] += mainFloatList.get(m)[i];
-                    Entry xy = getSensorList().get(i);
-                    mainCenterEntry[m].setX(mainCenterEntry[m].getX() + xy.getX() * mainFloatList.get(m)[i]);
-                    mainCenterEntry[m].setY(mainCenterEntry[m].getY() + xy.getY() * mainFloatList.get(m)[i]);
-                }
-                mainCenterEntry[m].setX(mainCenterEntry[m].getX() / mainFloatList.get(MainFloatList.Average)[m]);
-                mainCenterEntry[m].setY(mainCenterEntry[m].getY() / mainFloatList.get(MainFloatList.Average)[m]);
-                mainFloatList.get(MainFloatList.Average)[m] /= getNumberOfSensor();
-            }
+            for(byte m = 0; m < MainFloatList.MAIN_LENGTH; m++) {
+                mainFloatList.add(new float[getNumberOfSensor()]);
+                mainCenter[m] = new Entry(0f, 0f);
+                mainAverage[m] = 0;
+                mainDirection.add(new float[getNumberOfSensor()]);
 
-            // viceFloat
-            viceFloat = new float[ViceFloat.GyroZ_L];
-            for (int i=0; i<ViceFloat.GyroZ_L; i++) {
-                byte lock = 2;
-                if(Arrays.asList(ViceFloat.Triple).contains(i)) { lock = (byte) 3; }
-                viceFloat[i] = (float) OtherUsefulFunction.byteArrayToSignedInt(
-                        data.array(lock)
-                );
+                for (byte i=0; i<getNumberOfSensor(); i++) {
+                    // Magnitude
+                    byte numberOfByte = MainFloatList.defaultNumberOfByte;
+                    if(OtherUsefulFunction.contains(MainFloatList.Once, m)) { numberOfByte = (byte) 1; }
+                    mainFloatList.get(m)[i] = (float) OtherUsefulFunction.byteArrayToUnsignedInt(
+                            data.array(true, numberOfByte)
+                    );
+                    // Log.d("Main:" + String.valueOf(m) + ":" + String.valueOf(i) + ":" + String.valueOf(data.index()) + ":" + String.valueOf(mainFloatList.get(m)[i]));
+                    // Average, Center
+                    mainAverage[m] += mainFloatList.get(m)[i];
+                    Entry currentPosition = getSensorList().get(i);
+                    mainCenter[m].setX(mainCenter[m].getX() + currentPosition.getX() * mainFloatList.get(m)[i]);
+                    mainCenter[m].setY(mainCenter[m].getY() + currentPosition.getY() * mainFloatList.get(m)[i]);
+                }
+                // Average, Center
+                mainCenter[m].setX(mainCenter[m].getX() / mainAverage[m]);
+                mainCenter[m].setY(mainCenter[m].getY() / mainAverage[m]);
+                mainAverage[m] /= getNumberOfSensor();
             }
         }
         public ArrayList<Entry> getSensorList() {
-            return SensorPositions.getPositions(this.position);
+            return FootSensorPositions.getPositions(this.position);
         }
         public int getNumberOfSensor() {
-            return 31;
+            return FootSensorPositions.getPositions(this.position).size();
         }
+        public Entry getVectorMagnitudeDirection(int index, byte X, byte Y, @Nullable Entry center) {
+            if(center == null) {
+                center = new Entry(0f,0f);
+            }
+            float x = mainFloatList.get(X)[index] - center.getX();
+            float y = mainFloatList.get(Y)[index] - center.getY();
+            return new Entry(
+                    (float) Math.sqrt(
+                            (Math.pow(x, 2) + Math.pow(y, 2))
+                    ),
+                    (float) Math.atan2(x, y)
+            );
+        }
+        public ArrayList<String> getViceName() {
+            return getViceNameByPosition(this.position);
+        }
+    }
+
+    public ArrayList<ArrayList<Entry>> getViceEntryList() {
+        ArrayList<ArrayList<Entry>> entryList = new ArrayList<>();
+        for(int i=0; i < ViceFloat.VICE_LENGTH; i++) {
+            entryList.add(new ArrayList<>());
+        }
+        if(feet.size() == 0) { return entryList; }
+        for(int i=0; i < ViceFloat.VICE_LENGTH; i++) {
+            for (Foot foot:feet) {
+                entryList.get(i).add(new Entry(entryList.get(i).size()-1, foot.viceFloat[i]));
+//                Log.d(String.valueOf(entryList.size()-1) + ": " + String.valueOf(entryList.get(entryList.size()-1).size()));
+            }
+        }
+//        Log.d("ALL: " + String.valueOf(entryList.size()));
+        return entryList;
+    }
+    public static ArrayList<String> getAllViceName() {
+        ArrayList<String> strings = new ArrayList<>();
+        for (byte p:Position.ALL_POSITION) {
+            strings.addAll(getViceNameByPosition(p));
+        }
+        return strings;
+    }
+    public static ArrayList<ArrayList<String>> getAllViceNameList() {
+        ArrayList<ArrayList<String>> strings = new ArrayList<>();
+        for (byte p:Position.ALL_POSITION) {
+            strings.add(getViceNameByPosition(p));
+        }
+        return strings;
+    }
+    public static ArrayList<String> getViceNameByPosition(byte position) {
+        ArrayList<String> strings = new ArrayList<>();
+        int index = 0;
+        switch (position) {
+            case Position.LEFT_FOOT:
+                index = 0;
+                break;
+            case Position.RIGHT_FOOT:
+                index = 1;
+                break;
+        }
+        for (String vice:BasicResourceManager.getResources().getStringArray(R.array.FootViceDataLabels)) {
+            strings.add(BasicResourceManager.getResources().getStringArray(R.array.Foot)[index] + " - " + vice);
+        }
+        return strings;
     }
 
     public ArrayList<Foot> getFeet() {
@@ -138,7 +213,6 @@ public class FootLabelData extends CentralLabelData<FootDeviceData> {
         super(FootDeviceData);
 //        labelName = LabelName;
         labelName = "abc";
-        show = Show;
         levelOfDownload = LevelOfDownload;
     }
     public FootLabelData(FootDeviceData FootDeviceData, String LabelName) {
@@ -178,85 +252,33 @@ public class FootLabelData extends CentralLabelData<FootDeviceData> {
 
     @Override
     public boolean saveNewFile() {
-        return false;
-    }
+//        Log.i("saveMyFile: " + labelName);
+        try {
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH-mm-ss");
+            String currentTime = sdf.format(calendar.getTime());
 
-    public static class SensorPositions {
-        public static ArrayList<Entry> getPositions(byte position) {
-            switch (position) {
-                case Position.LEFT_FOOT:
-                    return Foot_Left;
-                case Position.RIGHT_FOOT:
-                    return Foot_Right;
+            Log.i(labelName);
+            MyExcelFile file = new MyExcelFile();
+            String sdCardPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator;
+            file.createExcelWorkbook(sdCardPath + currentTime + ".xls");
+            file.create_new_sheet(currentTime);
+
+            // Save as Excel XLSX file
+            if (file.exportDataIntoWorkbook()) {
+                Log.i(BasicResourceManager.getResources().getString(R.string.Temp_UI_save_toast));
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Toast.makeText(BasicResourceManager.getCurrentActivity(), currentTime + ": " + BasicResourceManager.getResources().getString(R.string.Temp_UI_save_toast), Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {}
+                    }
+                });
+                return true;
             }
-            return Foot_Left;
-        }
-        public static ArrayList<Entry> Foot_Left = new ArrayList<>(Arrays.asList(
-                new Entry(165.0f, 1716.0f),
-                new Entry(294.25f, 1710.5f),
-                new Entry(167.75f, 1564.75f),
-                new Entry(297.0f, 1559.25f),
-                new Entry(173.25f, 1413.5f),
-                new Entry(299.75f, 1408.0f),
-                new Entry(176.0f, 1278.75f),
-                new Entry(302.5f, 1276.0f),
-                new Entry(178.75f, 1078.0f),
-                new Entry(305.25f, 1075.25f),
-                new Entry(385.0f, 965.25f),
-                new Entry(132.0f, 965.25f),
-                new Entry(434.5f, 825.0f),
-                new Entry(280.5f, 822.25f),
-                new Entry(129.25f, 816.75f),
-                new Entry(486.75f, 695.75f),
-                new Entry(365.75f, 690.25f),
-                new Entry(220.0f, 684.75f),
-                new Entry(88.0f, 679.25f),
-                new Entry(506.0f, 561.0f),
-                new Entry(382.25f, 552.75f),
-                new Entry(247.5f, 547.25f),
-                new Entry(123.75f, 539.0f),
-                new Entry(506.0f, 434.5f),
-                new Entry(343.75f, 420.75f),
-                new Entry(178.75f, 412.5f),
-                new Entry(508.75f, 310.75f),
-                new Entry(360.25f, 297.0f),
-                new Entry(211.75f, 286.0f),
-                new Entry(445.5f, 198.0f),
-                new Entry(313.5f, 192.5f)
-        ));
-        public static ArrayList<Entry> Foot_Right = new ArrayList<>(Arrays.asList(
-                new Entry(1080.75f, 1716.0f),
-                new Entry(951.5f, 1710.5f),
-                new Entry(1078.0f, 1564.75f),
-                new Entry(948.75f, 1559.25f),
-                new Entry(1072.5f, 1413.5f),
-                new Entry(946.0f, 1408.0f),
-                new Entry(1069.75f, 1278.75f),
-                new Entry(943.25f, 1276.0f),
-                new Entry(1067.0f, 1078.0f),
-                new Entry(940.5f, 1075.25f),
-                new Entry(1113.75f, 965.25f),
-                new Entry(860.75f, 965.25f),
-                new Entry(811.25f, 825.0f),
-                new Entry(965.25f, 822.25f),
-                new Entry(1116.5f, 816.75f),
-                new Entry(759.0f, 695.75f),
-                new Entry(880.0f, 690.25f),
-                new Entry(1025.75f, 684.75f),
-                new Entry(1157.75f, 679.25f),
-                new Entry(739.75f, 561.0f),
-                new Entry(863.5f, 552.75f),
-                new Entry(998.25f, 547.25f),
-                new Entry(1122.0f, 539.0f),
-                new Entry(739.75f, 434.5f),
-                new Entry(902.0f, 420.75f),
-                new Entry(1067.0f, 412.5f),
-                new Entry(737.0f, 310.75f),
-                new Entry(885.5f, 297.0f),
-                new Entry(1034.0f, 286.0f),
-                new Entry(800.25f, 198.0f),
-                new Entry(932.25f, 192.5f)
-        ));
+        } catch (Exception e) {}
+        return false;
     }
 
 }

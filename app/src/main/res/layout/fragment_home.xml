@@ -19,7 +19,7 @@
             android:id="@+id/device_scan_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            layout="@layout/device_scan_fragment"
+            layout="@layout/fragment_device_scan"
             android:layout_weight="1"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout

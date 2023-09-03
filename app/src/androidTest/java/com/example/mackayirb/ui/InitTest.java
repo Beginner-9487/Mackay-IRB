@@ -19,13 +19,13 @@ import com.example.mackayirb.ui.central.CentralPresenter;
 import com.example.mackayirb.ui.main.MainActivity;
 import com.example.mackayirb.utils.BasicResourceManager;
 import com.example.mackayirb.utils.CircularBuffer;
+import com.example.mackayirb.data.central.FakeBytesGiver;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
 
 @RunWith(AndroidJUnit4ClassRunner.class)
@@ -99,17 +99,14 @@ public abstract class InitTest {
         return prepareToReturn;
     }
 
-    public abstract void createNewData();
+    public abstract int getNumberOfDataInLabel();
 
-    public byte getRandomByte() {
-        return (byte) ((Math.random() - 0.5f) * 254f);
-    }
-
-    public byte[] getRandomByteArray(int length) {
-        byte[] array = new byte[length];
-        for (int i=0; i<length; i++) {
-            array[i] = getRandomByte();
+    public void createNewData() {
+        FakeBytesGiver.Index = 0;
+        for(int i = 0; i< getNumberOfDataInLabel(); i++) {
+            getPreparedFakeData().bleData.DataBuffer.addData(
+                    FakeBytesGiver.getBytes()
+            );
         }
-        return array;
     }
 }

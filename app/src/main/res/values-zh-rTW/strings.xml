@@ -35,7 +35,7 @@
     <string name="ModeSwitchTogglingAlert">警告: 切換模式將會 重新啟動 應用程序!!!</string>
 
     <!--  ======================================================================  -->
-    <!--  Central_Chart  -->
+    <!--  Central_Mackay  -->
     <string name="AboutDataMonitorManager">數據監控管理器</string>
     <string-array name="AboutDataMonitorSelector">
         <item>顯示資料</item>
@@ -83,6 +83,22 @@
         <item></item>
         <item>皮質醇</item>
         <item>乳酸</item>
+    </string-array>
+    <!--  ======================================================================  -->
+    <!--  Central_Foot  -->
+    <string-array name="FootViceDataLabels">
+        <item>加速度X</item>
+        <item>加速度Y</item>
+        <item>加速度Z</item>
+        <item>陀螺儀X</item>
+        <item>陀螺儀Y</item>
+        <item>陀螺儀Z</item>
+        <item>磁力X</item>
+        <item>磁力Y</item>
+        <item>磁力Z</item>
+        <item>俯仰</item>
+        <item>翻滾</item>
+        <item>擺</item>
     </string-array>
 
     <!--  ======================================================================  -->
@@ -133,6 +149,7 @@
         <item>已掃描裝置</item>
         <item>暫時2 UI</item>
         <item>腳丫子</item>
+        <item>IMU</item>
     </string-array>
 
     <!--  ======================================================================  -->
@@ -143,7 +160,8 @@
     <string name="Temp_DataName_Hint">請輸入以便為該資料與檔案命名</string>
     <string name="Temp_UI_C6">C6 接收</string>
     <string name="Temp_FileIndexLimit_Hint">請輸入以限制保存文件的最大編號</string>
-    <string name="Temp_UI_save">儲存成 Excel 檔案</string>
+    <string name="Temp_UI_clear_raw_data">清除原始資料</string>
+    <string name="Temp_UI_save_excel_file">儲存成 Excel 檔案</string>
     <string name="Temp_UI_save_toast">儲存 Excel 檔案成功</string>
 
     <!-- Senior -->

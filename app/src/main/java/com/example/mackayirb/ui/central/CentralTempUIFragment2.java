@@ -18,10 +18,12 @@ import android.widget.TextView;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class CentralTemp2UIFragment extends CentralFragment implements CentralMvpView {
+public class CentralTempUIFragment2 extends CentralFragment implements CentralMvpView {
 
     EditText edit_command;
     Button btn_c3;
+    Button btn_clearRawData;
+    Button btn_saveFile;
     TextView text_time;
 
     long startingClock;
@@ -36,7 +38,7 @@ public class CentralTemp2UIFragment extends CentralFragment implements CentralMv
 
     @Override
     public int getLayoutId() {
-        return R.layout.central_temp2_ui;
+        return R.layout.fragment_temp_ui_2;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,6 +47,8 @@ public class CentralTemp2UIFragment extends CentralFragment implements CentralMv
 
         edit_command = view.findViewById(R.id.Command_Edit);
         btn_c3 = view.findViewById(R.id.C3_Send_Button);
+        btn_clearRawData = view.findViewById(R.id.Clear_Raw_Data_Button);
+        btn_saveFile = view.findViewById(R.id.Save_File_Button);
         text_time = view.findViewById(R.id.TimeText);
 
         startingClock = (isStartingClockInit) ? startingClock : Calendar.getInstance().getTimeInMillis();
@@ -57,6 +61,24 @@ public class CentralTemp2UIFragment extends CentralFragment implements CentralMv
                     mCentralPresenter.SendToAllCharacteristic(OtherUsefulFunction.hexStringToByteArray(edit_command.getText().toString()));
                     edit_command.setText("");
                     startingClock = Calendar.getInstance().getTimeInMillis();
+                }
+            }
+        });
+
+        btn_clearRawData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(BasicResourceManager.Permissions.checkGroupPermissions(BasicResourceManager.Permissions.REQUEST_EXTERNAL_STORAGE_CODE)) {
+                    mCentralPresenter.clearRawData();
+                }
+            }
+        });
+
+        btn_saveFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(BasicResourceManager.Permissions.checkGroupPermissions(BasicResourceManager.Permissions.REQUEST_EXTERNAL_STORAGE_CODE)) {
+                    mCentralPresenter.createManagerDataFile();
                 }
             }
         });
