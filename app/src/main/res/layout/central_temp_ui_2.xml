@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/Command_Edit"
+        android:maxLines="1"
+        android:inputType="text"
+        android:hint="@string/Temp_Command_Hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/Save_File_Button" />
+
+    <Button
+        android:id="@+id/C3_Send_Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Temp_UI_C3"
+        app:layout_constraintBottom_toTopOf="@+id/Clear_Raw_Data_Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Command_Edit" />
+
+    <Button
+        android:id="@+id/Clear_Raw_Data_Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Temp_UI_clear_all_data"
+        app:layout_constraintBottom_toTopOf="@+id/Save_File_Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/C3_Send_Button" />
+
+    <Button
+        android:id="@+id/Save_File_Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Temp_UI_save_excel_file"
+        app:layout_constraintBottom_toTopOf="@+id/TimeText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Clear_Raw_Data_Button" />
+
+    <TextView
+        android:id="@+id/TimeText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Save_File_Button" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

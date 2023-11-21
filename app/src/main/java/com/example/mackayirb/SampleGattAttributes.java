@@ -16,6 +16,9 @@
 
 package com.example.mackayirb;
 
+import com.example.mackayirb.utils.BasicResourceManager;
+import com.example.mackayirb.utils.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,11 +29,30 @@ import java.util.UUID;
  */
 public class SampleGattAttributes {
     public static HashMap<String, String> attributes = new HashMap();
-    public static ArrayList<String> subscribed_UUIDs;
-    public static ArrayList<String> input_UUIDs;
+    public static ArrayList<String> Subscribed_UUIDs() {
+        switch (BasicResourceManager.SharedPreferencesManager.getModeController()) {
+            case BasicResourceManager.SharedPreferencesManager.MackayClientMode:
+            case BasicResourceManager.SharedPreferencesManager.MackayDeveloperMode:
+                return getUUIDsByReference(new String[]{"C6"});
+            case BasicResourceManager.SharedPreferencesManager.FootDeveloperMode:
+                return getUUIDsByReference(new String[]{"R3"});
+            default:
+                return getUUIDsByReference(new String[]{});
+        }
+    }
+    public static ArrayList<String> Input_UUIDs() {
+        switch (BasicResourceManager.SharedPreferencesManager.getModeController()) {
+            case BasicResourceManager.SharedPreferencesManager.MackayClientMode:
+            case BasicResourceManager.SharedPreferencesManager.MackayDeveloperMode:
+                return getUUIDsByReference(new String[]{"C3"});
+            case BasicResourceManager.SharedPreferencesManager.FootDeveloperMode:
+                return getUUIDsByReference(new String[]{"R2"});
+            default:
+                return getUUIDsByReference(new String[]{});
+        }
+    }
 
     static {
-
         // ================================================================================
         // attributes
 
@@ -53,18 +75,6 @@ public class SampleGattAttributes {
         attributes.put("6E400000-B5A3-F393-E0A9-E50E24DCCA9E", "Service: R1-R6");
         attributes.put("6E400002-B5A3-F393-E0A9-E50E24DCCA9E", "R2");
         attributes.put("6E400003-B5A3-F393-E0A9-E50E24DCCA9E", "R3");
-
-        // ================================================================================
-        // subscribed
-//        input_UUIDs = getUUIDsByReference(new String[]{"C3"});
-//        subscribed_UUIDs = getUUIDsByReference(new String[]{"C6"});
-
-        input_UUIDs = getUUIDsByReference(new String[]{"R2"});
-        subscribed_UUIDs = getUUIDsByReference(new String[]{"R3"});
-
-//        input_UUIDs = getUUIDsByReference(new String[]{"C1","C2","C3","C4","C5","C6"});
-//        subscribed_UUIDs = getUUIDsByReference(new String[]{"C1","C2","C3","C4","C5","C6"});
-
     }
 
     public static ArrayList<String> getUUIDsByReference(String[] reference) {
@@ -91,10 +101,10 @@ public class SampleGattAttributes {
         ArrayList<String> list;
         switch(type){
             case 0:
-                list = subscribed_UUIDs;
+                list = Subscribed_UUIDs();
                 break;
             case 1:
-                list = input_UUIDs;
+                list = Input_UUIDs();
                 break;
             default:
                 list = new ArrayList<>();

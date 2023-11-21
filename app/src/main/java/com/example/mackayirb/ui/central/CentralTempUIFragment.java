@@ -43,7 +43,7 @@ public class CentralTempUIFragment extends CentralFragment implements CentralMvp
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_temp_ui;
+        return R.layout.central_temp_ui;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

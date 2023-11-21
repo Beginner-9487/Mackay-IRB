@@ -3,12 +3,12 @@ package com.example.mackayirb.utils;
 import android.content.Context;
 import android.os.Environment;
 
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,8 +18,8 @@ import java.util.ArrayList;
 
 public class MyExcelFile {
 
-    private HSSFWorkbook workbook = null;
-    private ArrayList<HSSFCellStyle> headerCellStyle = new ArrayList<>();
+    private XSSFWorkbook workbook = null;
+    private ArrayList<XSSFCellStyle> headerCellStyle = new ArrayList<>();
 
     // Global Variables
     private ArrayList<ArrayList<Row>> mRows = new ArrayList<>();
@@ -43,7 +43,7 @@ public class MyExcelFile {
      */
     public void createExcelWorkbook(String FilePath) {
         file_path = FilePath;
-        workbook = new HSSFWorkbook();
+        workbook = new XSSFWorkbook();
     }
 
     /**
@@ -108,7 +108,7 @@ public class MyExcelFile {
             Log.i("Reading from Excel" + file);
 
             // Create instance having reference to .xls file
-            workbook = new HSSFWorkbook(fileInputStream);
+            workbook = new XSSFWorkbook(fileInputStream);
 
             // Fetch sheet at position 'i' from the workbook
             mSheets.clear();

@@ -121,7 +121,7 @@
     </string-array>
     <!--  ======================================================================  -->
     <!--  Central_Foot  -->
-    <string-array name="FootViceDataLabels">
+    <string-array name="FootIMUDataLabels">
         <item>AccX</item>
         <item>AccY</item>
         <item>AccZ</item>
@@ -134,6 +134,15 @@
         <item>Pitch</item>
         <item>Roll</item>
         <item>Yaw</item>
+        <item>PressureX</item>
+        <item>PressureY</item>
+        <item>PressureZ</item>
+    </string-array>
+    <!--  ======================================================================  -->
+    <!--  Central_Leak  -->
+    <string-array name="LeakAlert">
+        <item>Internal Leakage Fluid</item>
+        <item>External Leakage Fluid</item>
     </string-array>
 
     <!--  ======================================================================  -->
@@ -185,6 +194,12 @@
         <item>Temp2 UI</item>
         <item>Foot Map</item>
         <item>Foot IMU</item>
+        <item>Foot Path</item>
+    </string-array>
+    <!-- ViewPager's Titles (Leak Developer) -->
+    <string-array name="ViewPagerTitlesLeakDeveloper">
+        <item>Scanned Devices</item>
+        <item>Leak</item>
     </string-array>
 
     <!--  ======================================================================  -->
@@ -195,7 +210,7 @@
     <string name="Temp_DataName_Hint">Please enter to name this data and file.</string>
     <string name="Temp_UI_C6">C6 Receive</string>
     <string name="Temp_FileIndexLimit_Hint">Please enter to limit the maximum index of saved files.</string>
-    <string name="Temp_UI_clear_raw_data">Clear Raw Data</string>
+    <string name="Temp_UI_clear_all_data">Clear All Data</string>
     <string name="Temp_UI_save_excel_file">Save Excel</string>
     <string name="Temp_UI_save_toast">Saving the Excel file succeeded.</string>
 
@@ -212,6 +227,8 @@
     <!--  ======================================================================  -->
     <!--  Different from LiZe App  -->
     <string name="Start">Start</string>
+    <string name="End">End</string>
+    <string name="Reset">Reset</string>
     <string name="AddDevice">Add Device</string>
     <string name="EditDevice">Edit Device</string>
     <string name="CurrentDeviceIP">Current device IP</string>

@@ -38,7 +38,7 @@ public class CentralTempUIFragment2 extends CentralFragment implements CentralMv
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_temp_ui_2;
+        return R.layout.central_temp_ui_2;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,7 +69,7 @@ public class CentralTempUIFragment2 extends CentralFragment implements CentralMv
             @Override
             public void onClick(View v) {
                 if(BasicResourceManager.Permissions.checkGroupPermissions(BasicResourceManager.Permissions.REQUEST_EXTERNAL_STORAGE_CODE)) {
-                    mCentralPresenter.clearRawData();
+                    mCentralPresenter.clearAllData();
                 }
             }
         });

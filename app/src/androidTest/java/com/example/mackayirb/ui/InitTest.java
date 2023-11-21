@@ -88,7 +88,7 @@ public abstract class InitTest {
         // Device1
         BLEDataServer.BLEData bleData = dataManager.getBLEServer().findBLEDataByDevice(null);
         BluetoothGattService bluetoothGattService = new BluetoothGattService(UUID.randomUUID(), 0);
-        BluetoothGattCharacteristic bluetoothGattCharacteristic = new BluetoothGattCharacteristic(UUID.fromString(SampleGattAttributes.subscribed_UUIDs.get(0)), 0, 0);
+        BluetoothGattCharacteristic bluetoothGattCharacteristic = new BluetoothGattCharacteristic(UUID.fromString(SampleGattAttributes.Subscribed_UUIDs().get(0)), 0, 0);
 
         PreparedFakeData prepareToReturn = new PreparedFakeData();
         prepareToReturn.bluetoothGattService = bluetoothGattService;

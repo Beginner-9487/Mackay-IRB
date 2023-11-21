@@ -6,7 +6,6 @@ import com.example.mackayirb.data.ble.BLEDataServer;
 import com.example.mackayirb.data.central.MackayManagerData;
 import com.example.mackayirb.data.central.MackayLabelData;
 import com.example.mackayirb.utils.BasicResourceManager;
-import com.example.mackayirb.utils.Log;
 import com.example.mackayirb.utils.OtherUsefulFunction;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
@@ -27,7 +26,7 @@ import java.util.Set;
 //import butterknife.BindView;
 //import butterknife.ButterKnife;
 
-public class CentralMackayFragment extends CentralChartWithMonitorFragment<MackayDataMonitorAdapter> implements CentralMvpView {
+public class CentralMackayFragment extends CentralChartWithMonitorFragment<MackayDataMonitorAdapter, MackayLineChart> implements CentralMvpView {
 
     LinkedHashMap<MackayLabelData, Boolean> showLabelArray = new LinkedHashMap<>();
     ArrayList<Boolean> showTypeArray = new ArrayList<>();
@@ -66,7 +65,7 @@ public class CentralMackayFragment extends CentralChartWithMonitorFragment<Macka
     }
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_chart_with_recycle;
+        return R.layout.central_mackay;
     }
     public View initView(View view) {
         view = super.initView(view);
@@ -85,7 +84,7 @@ public class CentralMackayFragment extends CentralChartWithMonitorFragment<Macka
             @Override
             public void onClick(View view) {
                 removeHighlight();
-                mLineChart.zoomOut();
+                lineChart.zoomOut();
             }
         });
         return view;
@@ -160,6 +159,9 @@ public class CentralMackayFragment extends CentralChartWithMonitorFragment<Macka
                     } catch (Exception e) {}
             }
             if(isShow) {
+                if(getDataMonitorAdapter() == null) {
+                    continue;
+                }
                 getDataMonitorAdapter().addData(
                         l.getKey(),
                         OtherUsefulFunction.getDataColor(BasicResourceManager.getResources(), index, showLabelArray.size(), 0.5f)

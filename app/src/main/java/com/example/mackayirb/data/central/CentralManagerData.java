@@ -113,4 +113,10 @@ public abstract class CentralManagerData<Manager extends CentralManagerData, Dev
 
     public abstract boolean createManagerDataFile();
 
+    public void clearLabelData() {
+        for(int i=0; i<deviceData.size(); i++) {
+            deviceData.get(i).clearLabelData();
+        }
+    }
+
 }

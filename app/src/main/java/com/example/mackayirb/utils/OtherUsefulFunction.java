@@ -1,5 +1,7 @@
 package com.example.mackayirb.utils;
 
+import static com.example.mackayirb.utils.BasicResourceManager.getResources;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,6 +15,9 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.PorterDuff;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
@@ -28,8 +33,17 @@ import androidx.fragment.app.FragmentManager;
 import com.example.mackayirb.fragment.PermissionAgreeFragment;
 import com.github.mikephil.charting.data.Entry;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class OtherUsefulFunction {
 
@@ -167,6 +181,14 @@ public class OtherUsefulFunction {
         return new byte[]{highNibble, lowNibble};
     }
 
+    public static int getMyColor(Resources resources, boolean isGray, int dataIndex, int dataSize, float contrastRatio) {
+        return ColorUtils.HSLToColor(
+                new float[]{
+                        (dataSize>0) ? (255.0f * dataIndex/dataSize) : 0,
+                        isGray ? 0.0f : 1.0f,
+                        0.5f + contrastRatio * 0.5f * (((resources.getConfiguration().uiMode & 48) == Configuration.UI_MODE_NIGHT_YES)?1.0f:-1.0f)
+                });
+    }
     /**
      * Get the color based on the data size, make sure each data has a different color.
      * <p></p>
@@ -177,12 +199,7 @@ public class OtherUsefulFunction {
      * {@link Configuration#UI_MODE_NIGHT_YES}
      */
     public static int getDataColor(Resources resources, int dataIndex, int dataSize, float contrastRatio) {
-        return ColorUtils.HSLToColor(
-                new float[]{
-                        (255.0f * dataIndex/dataSize),
-                        1.0f,
-                        0.5f + contrastRatio * 0.5f * (((resources.getConfiguration().uiMode & 48) == Configuration.UI_MODE_NIGHT_YES)?1.0f:-1.0f)
-                });
+        return getMyColor(resources, false, dataIndex, dataSize, contrastRatio);
     }
     /**
      * Get black or white according to uiMode.
@@ -195,6 +212,12 @@ public class OtherUsefulFunction {
      */
     public static int getBWColor(Resources resources) {
         return getDataColor(resources, 0, 1, 1.0f);
+    }
+    public static int getBWColorBackground(Resources resources) {
+        return getDataColor(resources, 0, 1, -1.0f);
+    }
+    public static int getDataGray(Resources resources, float contrastRatio) {
+        return getMyColor(resources, true, 0, 0, contrastRatio);
     }
 
     private static AlertDialog.Builder getYNDialogBuilder(Context context, String Title, @Nullable String Message, DialogInterface.OnClickListener yesListener, @Nullable DialogInterface.OnClickListener noListener) {
@@ -335,6 +358,9 @@ public class OtherUsefulFunction {
         }
         return max;
     }
+    public static float getRatio(float value, float max, float min) {
+        return ((max - min) != 0) ? (value - min) / (max - min) : 0f;
+    }
 
     public static float addDegree(float target, float degree) {
         return (float) (target + Math.toRadians(degree));
@@ -452,6 +478,66 @@ public class OtherUsefulFunction {
             }
         }
         return array;
+    }
+
+    /**
+     * Copies specified asset to the file in /files app directory and returns this file absolute path.
+     *
+     * @return absolute file path
+     */
+    public static String assetFilePath(Context context, String assetName) throws IOException {
+        File file = new File(context.getFilesDir(), assetName);
+        if (file.exists() && file.length() > 0) {
+            return file.getAbsolutePath();
+        }
+
+        try (InputStream is = context.getAssets().open(assetName)) {
+            try (OutputStream os = new FileOutputStream(file)) {
+                byte[] buffer = new byte[4 * 1024];
+                int read;
+                while ((read = is.read(buffer)) != -1) {
+                    os.write(buffer, 0, read);
+                }
+                os.flush();
+            }
+            return file.getAbsolutePath();
+        }
+    }
+
+    public static ArrayList<Float> getArrayList(float[] array) {
+        ArrayList<Float> arrayList = new ArrayList();
+        for (float item:array) {
+            arrayList.add(item);
+        }
+        return arrayList;
+    }
+
+
+    public static Map.Entry<Bitmap, RectF> getRescaleBitmap(Bitmap bitmap, float x, float y, float sx, float sy, float rotateDegree) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(rotateDegree);
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() * sx), (int) (bitmap.getHeight() * sy), true);
+        Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+        return new AbstractMap.SimpleEntry<Bitmap, RectF>(
+                rotatedBitmap,
+                new RectF(
+                        x - (rotatedBitmap.getWidth() / 2f),
+                        y - (rotatedBitmap.getHeight() / 2f),
+                        x + (rotatedBitmap.getWidth() / 2f),
+                        y + (rotatedBitmap.getHeight() / 2f)
+                )
+        );
+    }
+
+    public static Bitmap getBitmapFromXML(int drawableRes, int color) {
+        Drawable drawable = getResources().getDrawable(drawableRes);
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.mutate().setColorFilter( color, PorterDuff.Mode.MULTIPLY);
+        drawable.draw(canvas);
+        return bitmap;
     }
 
 }

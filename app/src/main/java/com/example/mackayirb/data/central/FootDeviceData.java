@@ -26,11 +26,6 @@ public class FootDeviceData extends CentralDeviceData<FootManagerData, FootLabel
     }
 
     @Override
-    public FootLabelData createNewLabelData() {
-        return new FootLabelData(this);
-    }
-
-    @Override
     public Object getInitObjectPreparedForNextLabelData() {
         return "abc";
     }

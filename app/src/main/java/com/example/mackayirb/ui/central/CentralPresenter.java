@@ -49,6 +49,7 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
             case BasicResourceManager.SharedPreferencesManager.MackayDeveloperMode:
                 return myMackayDataManager;
             case BasicResourceManager.SharedPreferencesManager.FootDeveloperMode:
+            case BasicResourceManager.SharedPreferencesManager.LeakDeveloperMode:
                 return myFootDataManager;
         }
         return null;
@@ -253,9 +254,17 @@ public class CentralPresenter extends BasePresenter<CentralMvpView> {
             }
         }
     }
+    public void clearAllData() {
+        clearRawData();
+        clearLabelData();
+    }
     public void clearRawData() {
         myFootDataManager.rawData = new ArrayList<>();
     }
+    public void clearLabelData() {
+        myFootDataManager.clearLabelData();
+    }
+
     public void createManagerDataFile() {
         getCentralDataManager().createManagerDataFile();
     }

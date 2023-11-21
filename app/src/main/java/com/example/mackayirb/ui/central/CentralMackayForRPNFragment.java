@@ -11,14 +11,8 @@ import com.example.mackayirb.adapter.MackayDataMonitorAdapter;
 import com.example.mackayirb.adapter.MackayForRPNDataMonitorAdapter;
 import com.example.mackayirb.data.central.MackayManagerData;
 import com.example.mackayirb.data.central.MackayLabelData;
-import com.example.mackayirb.utils.BasicResourceManager;
-import com.example.mackayirb.utils.OtherUsefulFunction;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class CentralMackayForRPNFragment extends CentralMackayFragment implements CentralMvpView {
 
@@ -41,9 +35,11 @@ public class CentralMackayForRPNFragment extends CentralMackayFragment implement
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        Operation_LL = view.findViewById(R.id.Operation_LL);
+        Operation_LL = view.findViewById(R.id.Operation);
         Operation_LL.setVisibility(View.GONE);
-        editHighlightSelector.setVisibility(View.GONE);
+        if(editHighlightSelector != null) {
+            editHighlightSelector.setVisibility(View.GONE);
+        }
         return view;
     }
 
@@ -51,7 +47,7 @@ public class CentralMackayForRPNFragment extends CentralMackayFragment implement
     public void updateChart() {
         setLineData();
         setHighlight(5.0f);
-        mLineChart.refreshChart();
+        lineChart.refreshChart();
         showHighlightedData();
     }
 

@@ -10,7 +10,7 @@ public class CentralScanDeveloperFragment extends CentralScanFragment implements
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_device_scan;
+        return R.layout.central_device_scan;
     }
     @Override
     public int getRefreshId() {

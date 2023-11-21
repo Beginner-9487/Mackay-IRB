@@ -53,11 +53,6 @@ public class MackayDeviceData extends CentralDeviceData<MackayManagerData, Macka
     }
 
     @Override
-    public MackayLabelData createNewLabelData() {
-        return new MackayLabelData(this);
-    }
-
-    @Override
     public Object getInitObjectPreparedForNextLabelData() {
 //        Log.d(String.valueOf(labelNamingStrategy.getMode()) + ": " + labelNamingStrategy.getName() + ": " + labelNamingStrategy.getCurrentName(bleData));
         return labelNamingStrategy.getCurrentName(bleData);
@@ -83,52 +78,55 @@ public class MackayDeviceData extends CentralDeviceData<MackayManagerData, Macka
     String createdFileName = "";
     @Override
     public boolean createDeviceDataFile() {
-//        Log.d("createDeviceDataFile");
-        try {
-            Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH-mm-ss");
-            String currentTime = sdf.format(calendar.getTime());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+        //        Log.d("createDeviceDataFile");
+                try {
+                    Calendar calendar = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH-mm-ss");
+                    String currentTime = sdf.format(calendar.getTime());
 
-            String dataName = this.labelNamingStrategy.getName();
+                    String dataName = labelNamingStrategy.getName();
 
-            if (createdFileName.equals("")) {
-                createdFileName = new MyNamingStrategy(MyNamingStrategy.All5s, dataName).getCurrentName(this.bleData);
-            }
-
-            MyExcelFile file = new MyExcelFile();
-            String sdCardPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator;
-            file.createExcelWorkbook(sdCardPath + createdFileName + ".xls");
-            file.create_new_sheet(dataName);
-
-            // Add value in the cell
-            int rowIndex = 0;
-            file.write_file(0, rowIndex, 0, BasicResourceManager.getResources().getString(R.string.LabelName) + ": " + dataName);
-            rowIndex++;
-            file.write_file(0, rowIndex, 0, BasicResourceManager.getResources().getString(R.string.SaveFileTime) + ": " + currentTime);
-            rowIndex++;
-            rowIndex++;
-            for (int i = 0; i < BasicResourceManager.getResources().getStringArray(R.array.TypeLabels).length; i++) {
-                file.write_file(0, rowIndex, i, BasicResourceManager.getResources().getStringArray(R.array.TypeLabels)[i]);
-            }
-
-//                    Log.d(file.toString());
-
-            // Save as Excel XLSX file
-            if (file.exportDataIntoWorkbook()) {
-                Log.i(BasicResourceManager.getResources().getString(R.string.Temp_UI_save_toast));
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Toast.makeText(BasicResourceManager.getCurrentActivity(), dataName + ": " + BasicResourceManager.getResources().getString(R.string.Temp_UI_save_toast), Toast.LENGTH_SHORT).show();
-                        } catch (Exception e) {}
+                    if (createdFileName.equals("")) {
+                        createdFileName = new MyNamingStrategy(MyNamingStrategy.All5s, dataName).getCurrentName(bleData);
                     }
-                });
-                return true;
+
+                    MyExcelFile file = new MyExcelFile();
+                    String sdCardPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator;
+                    file.createExcelWorkbook(sdCardPath + createdFileName + ".xls");
+                    file.create_new_sheet(dataName);
+
+                    // Add value in the cell
+                    int rowIndex = 0;
+                    file.write_file(0, rowIndex, 0, BasicResourceManager.getResources().getString(R.string.LabelName) + ": " + dataName);
+                    rowIndex++;
+                    file.write_file(0, rowIndex, 0, BasicResourceManager.getResources().getString(R.string.SaveFileTime) + ": " + currentTime);
+                    rowIndex++;
+                    rowIndex++;
+                    for (int i = 0; i < BasicResourceManager.getResources().getStringArray(R.array.TypeLabels).length; i++) {
+                        file.write_file(0, rowIndex, i, BasicResourceManager.getResources().getStringArray(R.array.TypeLabels)[i]);
+                    }
+
+        //                    Log.d(file.toString());
+
+                    // Save as Excel XLSX file
+                    if (file.exportDataIntoWorkbook()) {
+                        Log.i(BasicResourceManager.getResources().getString(R.string.Temp_UI_save_toast));
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Toast.makeText(BasicResourceManager.getCurrentActivity(), dataName + ": " + BasicResourceManager.getResources().getString(R.string.Temp_UI_save_toast), Toast.LENGTH_SHORT).show();
+                                } catch (Exception e) {}
+                            }
+                        });
+                    }
+                } catch (Exception e) {}
             }
-        } catch (Exception e) {
-        }
-        return false;
+        }).start();
+        return true;
     }
 
     @Override
@@ -139,44 +137,45 @@ public class MackayDeviceData extends CentralDeviceData<MackayManagerData, Macka
             isLoaded = true;
         }
 
-//        Log.i(centralLabelData.labelName);
-        try {
-            MyExcelFile file = new MyExcelFile();
-            String sdCardPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+        //        Log.i(centralLabelData.labelName);
+                try {
+                    MyExcelFile file = new MyExcelFile();
+                    String sdCardPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator;
 
-            String filePath = sdCardPath + createdFileName + ".xls";
-            file.readExcelFromStorage(BasicResourceManager.getCurrentFragment().getActivity(), filePath);
-            file.setFilePath(filePath);
+                    String filePath = sdCardPath + createdFileName + ".xls";
+                    file.readExcelFromStorage(BasicResourceManager.getCurrentFragment().getActivity(), filePath);
+                    file.setFilePath(filePath);
 
-            // Add value in the cell
-            int rowIndex = 3;
-            for (Map.Entry<Integer, ArrayList<Float>> data: centralLabelData.getAllXYSpecial().entrySet()) {
-                file.write_file(
-                        0,
+                    // Add value in the cell
+                    int rowIndex = 3;
+                    for (Map.Entry<Integer, ArrayList<Float>> data: centralLabelData.getAllXYSpecial().entrySet()) {
+                        file.write_file(
+                                0,
 //                                rowIndex + this.labelData.size(),
-                        rowIndex + this.labelData.stream().filter(d -> d.type == centralLabelData.type).collect(Collectors.toList()).size(),
-                        centralLabelData.type,
-                        String.valueOf(centralLabelData.getSpecialByX(5.0f).get(0))
-                );
-            }
-
-//                Log.d(file.toString());
-
-            // Save as Excel XLSX file
-            if (file.exportDataIntoWorkbook()) {
-                Log.i(BasicResourceManager.getResources().getString(R.string.Temp_UI_save_toast));
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Toast.makeText(BasicResourceManager.getCurrentActivity(), centralLabelData.labelName + ": " + BasicResourceManager.getResources().getString(R.string.Temp_UI_save_toast), Toast.LENGTH_SHORT).show();
-                        } catch (Exception e) {}
+                                rowIndex + labelData.stream().filter(d -> d.type == centralLabelData.type).collect(Collectors.toList()).size(),
+                                centralLabelData.type,
+                                String.valueOf(centralLabelData.getSpecialByX(5.0f).get(0))
+                        );
                     }
-                });
-                return true;
-            }
-        } catch (Exception e) {}
-        return false;
-    }
 
+                    // Save as Excel XLSX file
+                    if (file.exportDataIntoWorkbook()) {
+                        Log.i(BasicResourceManager.getResources().getString(R.string.Temp_UI_save_toast));
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Toast.makeText(BasicResourceManager.getCurrentActivity(), centralLabelData.labelName + ": " + BasicResourceManager.getResources().getString(R.string.Temp_UI_save_toast), Toast.LENGTH_SHORT).show();
+                                } catch (Exception e) {}
+                            }
+                        });
+                    }
+                } catch (Exception e) {}
+            }
+        }).start();
+        return true;
+    }
 }

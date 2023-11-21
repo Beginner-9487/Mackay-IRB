@@ -16,7 +16,6 @@ import com.example.mackayirb.R;
 import com.example.mackayirb.data.central.FootManagerData;
 import com.example.mackayirb.data.central.FootLabelData;
 import com.example.mackayirb.utils.BasicResourceManager;
-import com.example.mackayirb.utils.Log;
 import com.example.mackayirb.utils.OtherUsefulFunction;
 import com.example.mackayirb.utils.ShapeData;
 import com.github.mikephil.charting.data.Entry;
@@ -27,7 +26,7 @@ import java.util.LinkedHashMap;
 
 public class CentralFootMapFragment extends CentralFragment implements CentralMvpView {
 
-    private FootCanvas canvasView;
+    private FootMapCanvas canvasView;
 
     @Override
     public void onAttach(Context context) {
@@ -37,7 +36,7 @@ public class CentralFootMapFragment extends CentralFragment implements CentralMv
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_foot_map;
+        return R.layout.central_foot_map;
     }
 
     @Override
@@ -52,9 +51,31 @@ public class CentralFootMapFragment extends CentralFragment implements CentralMv
         Bitmap image3 = ((BasicResourceManager.getResources().getConfiguration().uiMode & 48) == Configuration.UI_MODE_NIGHT_YES)
                 ? BitmapFactory.decodeResource(getResources(), R.drawable.xyz_white)
                 : BitmapFactory.decodeResource(getResources(), R.drawable.xyz_black);
-        canvasView.putBackgroundImage(image1, 0,  0);
-        canvasView.putBackgroundImage(image2, image1.getWidth(),  0);
-        canvasView.putBackgroundImage(image3, image1.getWidth() + image2.getWidth(),  0);
+        canvasView.putBackgroundImage(
+                image1,
+                image1.getWidth() / 2f,
+                image1.getHeight() / 2f,
+                1f,
+                1f,
+                0
+        );
+        canvasView.putBackgroundImage(
+                image2,
+                image1.getWidth() + (image2.getWidth() / 2f),
+                image2.getHeight() / 2f,
+                1f,
+                1f,
+                0
+        )
+        ;
+        canvasView.putBackgroundImage(
+                image3,
+                image1.getWidth() + image2.getWidth() + (image3.getWidth() / 2f),
+                image3.getHeight() / 2f,
+                1f,
+                1f,
+                0
+        );
 
         return view;
     }
@@ -62,17 +83,33 @@ public class CentralFootMapFragment extends CentralFragment implements CentralMv
     @Override
     public void doSomethingFrequently() {
         try {
-            FootManagerData footDataManager = ((FootManagerData) (mCentralPresenter.getCentralDataManager()));
-            ArrayList<FootLabelData.Foot> eachDeviceFoot = new ArrayList<>();
-//            ArrayList<ArrayList<FootLabelData.Foot>> eachDeviceFeet = new ArrayList<>();
-            for (int i=0; i<footDataManager.deviceData.size(); i++) {
-                eachDeviceFoot.addAll(footDataManager.deviceData.get(i).labelData.get(0).getNewestFeet());
-//                eachDeviceFeet.add(footDataManager.deviceData.get(i).labelData.get(0).getFeet());
+            if(!this.equals(BasicResourceManager.getCurrentFragment())) {
+                return;
             }
-            parseShapeData(eachDeviceFoot);
-            canvasView.setShapeDataHash(shapeData);
-//            parseLineData(eachDeviceFeet);
-//            canvasView.setLineDataHash(lineData);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+//                            Log.d("map");
+                            FootManagerData footDataManager = ((FootManagerData) (mCentralPresenter.getCentralDataManager()));
+                            ArrayList<FootLabelData.Foot> eachDeviceFoot = new ArrayList<>();
+//                            ArrayList<ArrayList<FootLabelData.Foot>> eachDeviceFeet = new ArrayList<>();
+                            for (int i=0; i<footDataManager.deviceData.size(); i++) {
+                                if(footDataManager.deviceData.get(i).labelData.size() == 0) {
+                                    break;
+                                }
+                                eachDeviceFoot.addAll(footDataManager.deviceData.get(i).labelData.get(0).getNewestFeet());
+//                            eachDeviceFeet.add(footDataManager.deviceData.get(i).labelData.get(0).getFeet());
+                            }
+                            parseShapeData(eachDeviceFoot);
+                            canvasView.setShapeDataHash(shapeData);
+//                            parseLineData(eachDeviceFeet);
+//                            canvasView.setLineDataHash(lineData);
+                        }
+                    });
+                }
+            }).start();
         } catch (Exception e) {}
     }
 
@@ -86,55 +123,56 @@ public class CentralFootMapFragment extends CentralFragment implements CentralMv
             public static float[][][] ValueRanges = new float[][][]{
                     new float[][]{
                             new float[]{
-                                    (float) Math.sqrt(Math.pow(0x2000, 2) * 2), (float) Math.sqrt(Math.pow(0x8000, 2) * 2)
+                                    (float) Math.sqrt(Math.pow(1.5, 2) * 2), (float) Math.sqrt(Math.pow(10, 2) * 2)
                             }
                     },
                     new float[][]{
                             new float[]{
-                                    42000f, 56000f
+                                    2f, -25f
                             }
                     },
                     new float[][]{
                             new float[]{
-                                    20f, 45f
+                                    25f, 40f
                             }
                     }
             };
             public static float[][][] MaxRanges = new float[][][]{
                     new float[][]{
                             new float[]{
-                                    ValueRanges[0][0][1], (float) Math.sqrt(Math.pow(0xFFFF, 2) * 2)
+                                    // ValueRanges[ShearForce][0][1], (float) Math.sqrt(Math.pow(0xFFFF, 2) * 2),
                             }
                     },
                     new float[][]{
                             new float[]{
-                                    ValueRanges[1][0][1], 0xFFFF
+                                    ValueRanges[Pressures][0][1], -0xFFFF
                             }
                     },
                     new float[][]{
                             new float[]{
-                                    ValueRanges[2][0][1], 0xFF
+                                    ValueRanges[Temperatures][0][1], 0xFF
                             }
                     }
             };
             public static float[][][] MinRanges = new float[][][]{
                     new float[][]{
                             new float[]{
-                                    (float) Math.sqrt(Math.pow(0x0000, 2) * 2), ValueRanges[0][0][0]
+                                    (float) Math.sqrt(Math.pow(0x0000, 2) * 2), ValueRanges[ShearForce][0][0],
+                                    ValueRanges[ShearForce][0][1], (float) Math.sqrt(Math.pow(0xFFFF, 2) * 2),
                             }
                     },
                     new float[][]{
                             new float[]{
-                                    0x0000, ValueRanges[1][0][0]
+                                    0xFFFF, ValueRanges[Pressures][0][0]
                             }
                     },
                     new float[][]{
                             new float[]{
-                                    0x00, ValueRanges[2][0][0]
+                                    0x00, ValueRanges[Temperatures][0][0]
                             }
                     }
             };
-            public static byte[] ColorStep = new byte[]{0, 7, 5};
+            public static byte[] ColorStep = new byte[]{0, 6, 8};
             public static boolean[] ColorInverse = new boolean[]{true, true, true};
             public static int findTargetRangeIndex(float[] array, float value) {
                 for(int i=0; i<array.length; i+=2) {
@@ -178,7 +216,7 @@ public class CentralFootMapFragment extends CentralFragment implements CentralMv
                 }
                 return sum + Math.abs(value - targetArray[index]);
             }
-            public static final float MAX_MAX = Float.MAX_VALUE / 2.0f;
+            public static final float MAX_MAX = Float.MAX_VALUE;
             public static float getDiffOfMaxToMin(byte type, float value) {
                 float[] targetArray = findTargetRangeArray(ValueRanges, type, value);
                 if(targetArray.length == 0) {
@@ -193,7 +231,7 @@ public class CentralFootMapFragment extends CentralFragment implements CentralMv
             public static float getRatioOfValueRange(byte type, float value) {
                 float v = getDiffOfValueToMin(type, value);
                 if(v == VALUE_NULL) {
-                    return 0f;
+                    return VALUE_NULL;
                 }
                 return v / getDiffOfMaxToMin(type, value);
             }
@@ -240,12 +278,16 @@ public class CentralFootMapFragment extends CentralFragment implements CentralMv
     }
 
     public static int getDataColor(float ratio, byte step, float contrastRatio, boolean inverse) {
+        if(ratio == Types.Ranges.VALUE_NULL) {
+            return OtherUsefulFunction.getBWColor(BasicResourceManager.getResources());
+        }
         if(step != 0) {
-            float h = (255.0f / step) * ((int) (step * ratio));
-            h = (inverse) ? (255f - h) : h;
+            int p = (int) Math.floor(step * ratio);
+            float h = (255.0f / (step-1)) * p;
             h = (h > 255f) ? 255f : h;
             h = (h < 0f) ? 0f : h;
-            Log.d(String.valueOf(ratio) + ": " + String.valueOf(h));
+            h = (inverse) ? (255f - h) : h;
+            // Log.d(String.valueOf(ratio) + ": " + String.valueOf(h) + ": " + String.valueOf(step) + ": " + String.valueOf(p));
             return ColorUtils.HSLToColor(
                     new float[]{
                             h,
@@ -276,20 +318,20 @@ public class CentralFootMapFragment extends CentralFragment implements CentralMv
                     float direction = 0f;
                     switch (type) {
                         case Types.Temperatures:
-                            value = foot.mainFloatList.get(FootLabelData.MainFloatList.Temperatures)[index];
+                            value = foot.mapFloatList.get(FootLabelData.MapFloatList.Temperatures)[index];
                             break;
                         case Types.Pressures:
-                            value = foot.mainFloatList.get(FootLabelData.MainFloatList.Pressures)[index];
+                            value = foot.mapFloatList.get(FootLabelData.MapFloatList.Pressures)[index];
                             break;
                         case Types.ShearForce:
-                            Entry entry = foot.getVectorMagnitudeDirection(index, FootLabelData.MainFloatList.ShearForceX, FootLabelData.MainFloatList.ShearForceY, new Entry(0x7FFF, 0x7FFF));
+                            Entry entry = foot.getVectorMagnitudeDirection(index, FootLabelData.MapFloatList.ShearForceX, FootLabelData.MapFloatList.ShearForceY, new Entry(0, 0));
                             value = entry.getX();
-                            direction = entry.getY();
+                            direction = (float) (entry.getY() + Math.PI);
                             break;
                     }
                     // Log.d(String.valueOf(type) + ":" + String.valueOf(value) + ":" + String.valueOf(getCalibrationIntensity(type, value)) + ":" + String.valueOf(direction));
                     Paint paint = getBasicPaint();
-                    Log.d(String.valueOf(type) + ": " + String.valueOf(value));
+                    // Log.d(String.valueOf(type) + ": " + String.valueOf(value));
                     paint.setColor(
                             getDataColor(
                                     Types.Ranges.getRatioOfValueRange(type, value),

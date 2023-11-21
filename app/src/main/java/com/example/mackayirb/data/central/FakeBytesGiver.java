@@ -85,12 +85,13 @@ public class FakeBytesGiver {
                         new byte[]{
                                 getNewType(),
                         },
-                        OtherUsefulFunction.getRandomByteArray(24),
-                        OtherUsefulFunction.getSignedIntSequenceToByteArray(true, 0, 2000,2, 31),
-                        OtherUsefulFunction.getSignedIntSequenceToByteArray(true, 0, 2000,2, 31),
-                        OtherUsefulFunction.getSignedIntSequenceToByteArray(true, 33000, 1000,2, 31),
-                        OtherUsefulFunction.getSignedIntSequenceToByteArray(true, 19, 1,1, 31)
+                        OtherUsefulFunction.getRandomByteArray(FootLabelData.IMUFloat.IMU_LENGTH * 2),
+                        OtherUsefulFunction.getSignedIntSequenceToByteArray(true, 0, 2000,2, FootSensorPositions.Foot_Left.size()),
+                        OtherUsefulFunction.getSignedIntSequenceToByteArray(true, 0, 2000,2, FootSensorPositions.Foot_Left.size()),
+                        OtherUsefulFunction.getSignedIntSequenceToByteArray(true, 33000, 1000,2, FootSensorPositions.Foot_Left.size()),
+                        OtherUsefulFunction.getSignedIntSequenceToByteArray(true, 19, 1,1, FootSensorPositions.Foot_Left.size())
                 );
+
         }
         return OtherUsefulFunction.getRandomByteArray(1000);
     }

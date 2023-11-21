@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mackayirb.R;
-import com.example.mackayirb.utils.Log;
 
 import java.util.ArrayList;
 
@@ -18,10 +17,16 @@ public class NormalAdapter extends RecyclerView.Adapter<NormalAdapter.DataViewHo
     View view;
 
     ArrayList<String> strings = new ArrayList<>();
-    ArrayList<Integer> colors = new ArrayList<>();
+    ArrayList<Integer> colorTexts = new ArrayList<>();
+    ArrayList<Integer> colorBackgrounds = new ArrayList<>();
 
     public int LayoutId() {
         return R.layout.listitem_normal;
+    }
+
+    Float fontSize = null;
+    public void setFontSize(Float fontSize) {
+        this.fontSize = fontSize;
     }
 
     @NonNull
@@ -35,24 +40,36 @@ public class NormalAdapter extends RecyclerView.Adapter<NormalAdapter.DataViewHo
 
     @Override
     public void onBindViewHolder(@NonNull NormalAdapter.DataViewHolder holder, int position) {
-        Log.d("position: " + String.valueOf(position));
+        if(fontSize != null) {
+            holder.textView.setTextSize(fontSize);
+        }
+
+        // Log.d("position: " + String.valueOf(position));
         holder.textView.setText(strings.get(position));
-        holder.textView.setTextColor(colors.get(position).intValue());
+        if(colorTexts.get(position) != null) {
+            holder.textView.setTextColor(colorTexts.get(position).intValue());
+        }
+        if(colorBackgrounds.get(position) != null) {
+            holder.textView.setBackgroundColor(colorBackgrounds.get(position).intValue());
+        }
     }
 
-    public void add(String string, int color) {
+    public void add(String string, Integer colorText, Integer colorBackground) {
         strings.add(string);
-        colors.add(color);
+        colorTexts.add(colorText);
+        colorBackgrounds.add(colorBackground);
     }
 
-    public void set(ArrayList<String> strings, ArrayList<Integer> colors) {
+    public void set(ArrayList<String> strings, ArrayList<Integer> colorTexts, ArrayList<Integer> colorBackgrounds) {
         this.strings = strings;
-        this.colors = colors;
+        this.colorTexts = colorTexts;
+        this.colorBackgrounds = colorBackgrounds;
     }
 
     public void clear() {
         this.strings.clear();
-        this.colors.clear();
+        this.colorTexts.clear();
+        this.colorBackgrounds.clear();
     }
 
     @Override

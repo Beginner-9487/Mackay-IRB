@@ -109,12 +109,14 @@ public class BasicResourceManager {
         public static final int MackayClientMode = 0;
         public static final int MackayDeveloperMode = 1;
         public static final int FootDeveloperMode = 2;
+        public static final int LeakDeveloperMode = 4;
         // TODO ModeController
         public static int getModeController() {
             switch (sharedPreference.getInt(ModeController, MackayClientMode)) {
                 case MackayClientMode:
                 case MackayDeveloperMode:
                 case FootDeveloperMode:
+                case LeakDeveloperMode:
                     break;
                 default:
                     return MackayDeveloperMode;

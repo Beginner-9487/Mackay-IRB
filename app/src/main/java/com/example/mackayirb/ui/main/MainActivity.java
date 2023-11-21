@@ -19,6 +19,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.mackayirb.ui.base.BaseViewpagerAdapter;
 import com.example.mackayirb.ui.central.CentralFootIMUFragment;
+import com.example.mackayirb.ui.central.CentralFootPathFragment;
+import com.example.mackayirb.ui.central.CentralLeakDetectionFragment;
 import com.example.mackayirb.ui.central.CentralMackayForRPNFragment;
 import com.example.mackayirb.ui.central.CentralMackayFragment;
 import com.example.mackayirb.ui.central.CentralFootMapFragment;
@@ -202,6 +204,9 @@ public class MainActivity extends BaseActivity implements MainMvpView {
             case BasicResourceManager.SharedPreferencesManager.FootDeveloperMode:
                 titles = getResources().getStringArray(R.array.ViewPagerTitlesFootDeveloper);
                 break;
+            case BasicResourceManager.SharedPreferencesManager.LeakDeveloperMode:
+                titles = getResources().getStringArray(R.array.ViewPagerTitlesLeakDeveloper);
+                break;
         }
 
         fragments = new Fragment[titles.length];
@@ -223,6 +228,11 @@ public class MainActivity extends BaseActivity implements MainMvpView {
                 fragments[1] = new CentralTempUIFragment2();
                 fragments[2] = new CentralFootMapFragment();
                 fragments[3] = new CentralFootIMUFragment();
+                fragments[4] = new CentralFootPathFragment();
+                break;
+            case BasicResourceManager.SharedPreferencesManager.LeakDeveloperMode:
+                fragments[0] = new CentralScanDeveloperFragment();
+                fragments[1] = new CentralLeakDetectionFragment();
                 break;
         }
 

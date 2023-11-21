@@ -86,7 +86,7 @@
     </string-array>
     <!--  ======================================================================  -->
     <!--  Central_Foot  -->
-    <string-array name="FootViceDataLabels">
+    <string-array name="FootIMUDataLabels">
         <item>加速度X</item>
         <item>加速度Y</item>
         <item>加速度Z</item>
@@ -99,6 +99,15 @@
         <item>俯仰</item>
         <item>翻滾</item>
         <item>擺</item>
+        <item>壓力X</item>
+        <item>壓力Y</item>
+        <item>壓力Z</item>
+    </string-array>
+    <!--  ======================================================================  -->
+    <!--  Central_Leak  -->
+    <string-array name="LeakAlert">
+        <item>內滲漏液</item>
+        <item>外滲漏液</item>
     </string-array>
 
     <!--  ======================================================================  -->
@@ -150,6 +159,7 @@
         <item>暫時2 UI</item>
         <item>腳丫子</item>
         <item>IMU</item>
+        <item>路徑</item>
     </string-array>
 
     <!--  ======================================================================  -->
@@ -160,7 +170,7 @@
     <string name="Temp_DataName_Hint">請輸入以便為該資料與檔案命名</string>
     <string name="Temp_UI_C6">C6 接收</string>
     <string name="Temp_FileIndexLimit_Hint">請輸入以限制保存文件的最大編號</string>
-    <string name="Temp_UI_clear_raw_data">清除原始資料</string>
+    <string name="Temp_UI_clear_all_data">清除所有資料</string>
     <string name="Temp_UI_save_excel_file">儲存成 Excel 檔案</string>
     <string name="Temp_UI_save_toast">儲存 Excel 檔案成功</string>
 
@@ -176,6 +186,8 @@
     <!--  ======================================================================  -->
     <!--  Different from LiZe App  -->
     <string name="Start">開始</string>
+    <string name="End">結束</string>
+    <string name="Reset">重置</string>
     <string name="AddDevice">新增裝置</string>
     <string name="EditDevice">編輯裝置</string>
     <string name="CurrentDeviceIP">當前裝置位址</string>

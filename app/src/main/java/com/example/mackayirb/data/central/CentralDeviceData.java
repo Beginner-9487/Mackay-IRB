@@ -18,23 +18,6 @@ public abstract class CentralDeviceData<Manager extends CentralManagerData, Labe
         myManager = manager;
     }
 
-    public Label findLabel(Label item) {
-        int targetIndex = -1;
-        for (int i = 0; i < labelData.size(); i++) {
-            if (labelData.get(i).equals(item)) {
-                targetIndex = i;
-            }
-        }
-//        Log.d(String.valueOf(deviceData.size()));
-        if (targetIndex == -1) {
-            labelData.add(createNewLabelData());
-            targetIndex = labelData.size() - 1;
-        }
-        return labelData.get(targetIndex);
-    }
-
-    public abstract Label createNewLabelData();
-
     public abstract Object getInitObjectPreparedForNextLabelData();
 
     public abstract boolean removeLabelByObject(byte type, Object object);
@@ -42,4 +25,8 @@ public abstract class CentralDeviceData<Manager extends CentralManagerData, Labe
     public abstract boolean createDeviceDataFile();
 
     public abstract boolean editDeviceDataFile(Label centralLabelData);
+
+    public void clearLabelData() {
+        labelData.clear();
+    }
 }

@@ -87,7 +87,6 @@ public class MackayManagerData extends CentralManagerData<MackayManagerData, Mac
 
     @Override
     public boolean createManagerDataFile() {
-        Log.d("false");
         return false;
     }
 

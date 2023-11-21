@@ -47,7 +47,7 @@ public class CentralScanClientFragment extends CentralScanDeveloperFragment impl
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_home;
+        return R.layout.central_home;
     }
     @Override
     public int getRefreshId() {
