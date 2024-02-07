@@ -228,7 +228,8 @@ public class MainActivity extends BaseActivity implements MainMvpView {
                 fragments[1] = new CentralTempUIFragment2();
                 fragments[2] = new CentralFootMapFragment();
                 fragments[3] = new CentralFootIMUFragment();
-                fragments[4] = new CentralFootPathFragment();
+//                fragments[4] = new CentralFootPathFragment();
+                fragments[4] = new CentralTempUIFragment2();
                 break;
             case BasicResourceManager.SharedPreferencesManager.LeakDeveloperMode:
                 fragments[0] = new CentralScanDeveloperFragment();

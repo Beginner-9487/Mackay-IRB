@@ -123,7 +123,7 @@ public class CentralFootMapFragment extends CentralFragment implements CentralMv
             public static float[][][] ValueRanges = new float[][][]{
                     new float[][]{
                             new float[]{
-                                    (float) Math.sqrt(Math.pow(1.5, 2) * 2), (float) Math.sqrt(Math.pow(10, 2) * 2)
+                                    (float) Math.sqrt(Math.pow(2, 2) * 2), (float) Math.sqrt(Math.pow(10, 2) * 2)
                             }
                     },
                     new float[][]{
@@ -261,8 +261,8 @@ public class CentralFootMapFragment extends CentralFragment implements CentralMv
     public float getCalibrationIntensity(byte type, float value) {
         switch (type) {
             case Types.ShearForce:
-//                return 70f;
-                return 70f * Types.Ranges.getRatioOfValueRange(type, value);
+//                return 140f;
+                return 140f * Types.Ranges.getRatioOfValueRange(type, value);
             case Types.Pressures:
                 return 30f;
             case Types.Temperatures:
@@ -326,7 +326,8 @@ public class CentralFootMapFragment extends CentralFragment implements CentralMv
                         case Types.ShearForce:
                             Entry entry = foot.getVectorMagnitudeDirection(index, FootLabelData.MapFloatList.ShearForceX, FootLabelData.MapFloatList.ShearForceY, new Entry(0, 0));
                             value = entry.getX();
-                            direction = (float) (entry.getY() + Math.PI);
+                            direction = (float) (entry.getY());
+//                            direction = (float) (entry.getY() + Math.PI);
                             break;
                     }
                     // Log.d(String.valueOf(type) + ":" + String.valueOf(value) + ":" + String.valueOf(getCalibrationIntensity(type, value)) + ":" + String.valueOf(direction));
